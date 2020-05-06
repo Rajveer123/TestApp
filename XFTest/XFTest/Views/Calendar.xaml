@@ -1,0 +1,522 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+             xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms" 
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
+             mc:Ignorable="d"
+             x:Class="XFTest.Views.Calendar"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Grid Padding="0" BackgroundColor="#25A87B" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+
+                <StackLayout Grid.Row="0" Grid.Column="0" Padding="20,20,20,20" >
+
+                    <Grid Padding="0,0,0,10" >
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*" />
+                            <ColumnDefinition Width="0.5*" />
+                            <ColumnDefinition Width="0.5*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Margin="{OnPlatform iOS='0,55,0,0', Android='0,30,0,0'}" Text="Nov 2019" 
+                               Style="{StaticResource PageHeading}" 
+                               HorizontalTextAlignment="Start" 
+                               FontFamily="{StaticResource BoldFont}"  FontSize="{StaticResource FontSizeA20I23}" TextColor="#FFFFFF" />
+                        <ffimageloadingsvg:SvgCachedImage Margin="{OnPlatform iOS='0,60,0,0', Android='0,30,0,0'}" 
+                                Source="Arrow_Left.svg" 
+                                WidthRequest="12" 
+                                Grid.Row="0" Grid.Column="1"
+                                HorizontalOptions="End"
+			                />
+                        <ffimageloadingsvg:SvgCachedImage Margin="{OnPlatform iOS='0,60,0,0', Android='0,30,0,0'}" 
+                                Source="Arrow_Right.svg" 
+                                WidthRequest="12" 
+                                Grid.Row="0" Grid.Column="2"
+                                HorizontalOptions="End"
+			                />
+
+                    </Grid>
+
+
+                    <ScrollView BackgroundColor="#25A87B" Orientation="Horizontal" Padding="0, 0, 0, 0" >
+                        <StackLayout Orientation="Horizontal">
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad01" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl01" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="01" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl01" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Ma</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad02" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl02" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="02" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl02" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Ti</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad03" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl03" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="03" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl03" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >On</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad04" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView CornerRadius="{OnPlatform iOS='20', Android='45,45,45,45'}" 
+                                                   BackgroundColor="#368268" 
+                                                   Grid.Row="0" Grid.Column="0"
+                                                   >
+                                        <Label x:Name="dateLbl04" Text="04" FontFamily="{StaticResource BoldFont}"
+                                                Style="{StaticResource CalDateText}" 
+                                                TextColor="{StaticResource ColorBluishGrey}" 
+                                                HorizontalOptions="CenterAndExpand"
+                                                Padding="10,10,10,10"
+                                                />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl04" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorWhite}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       Padding="0,5,0,0"
+                                       >To</Label>
+                                </Grid>
+
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad05" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl05" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="05" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl05" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Fr</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad06" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0" 
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl06" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="06" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl06" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Lø</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad07" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl07" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="07" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl07" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Sø</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad08" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl08" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="08" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl08" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Ma</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad09" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl09" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="09" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl09" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Ti</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad10" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl10" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="10" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl10" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >On</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad11" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label x:Name="dateLbl11" Text="11" FontFamily="{StaticResource BoldFont}"
+                                                Style="{StaticResource CalDateText}" 
+                                                TextColor="{StaticResource ColorBluishGrey}" 
+                                                HorizontalOptions="CenterAndExpand"
+                                                HeightRequest="35"
+                                                Padding="4,10,4,0"
+                                                />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl11" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorWhite}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >To</Label>
+                                </Grid>
+
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad12" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl12" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="12" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl12" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Fr</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad13" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl13" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="13" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl13" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Lø</Label>
+                                </Grid>
+                            </StackLayout>
+
+                            <StackLayout HorizontalOptions="StartAndExpand" >
+                                <Grid x:Name="calPad14" Style="{StaticResource CalDatePad}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" />
+                                    </Grid.ColumnDefinitions>
+                                    <yummy:PancakeView  
+                                        Grid.Row="0" Grid.Column="0"
+                                        >
+                                        <Label 
+                                            x:Name="dateLbl14" FontFamily="{StaticResource BoldFont}"
+                                            Style="{StaticResource CalDateText}" Text="14" 
+                                            TextColor="{StaticResource ColorBluishGrey}" 
+                                            HorizontalOptions="CenterAndExpand"
+                                            HeightRequest="35"
+                                            Padding="4,10,4,0"
+                                            />
+                                    </yummy:PancakeView>
+
+                                    <Label 
+                                       Grid.Row="1" Grid.Column="0"
+                                       x:Name="dayLbl14" 
+                                       FontFamily="{StaticResource RegularFont}"
+                                       Style="{StaticResource NormalText11Cal}" 
+                                       TextColor="{StaticResource ColorBluishGrey}" 
+                                       HorizontalOptions="CenterAndExpand"
+                                       >Sø</Label>
+                                </Grid>
+                            </StackLayout>
+
+
+
+                        </StackLayout>
+                    </ScrollView>
+
+                </StackLayout>
+
+            </Grid>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

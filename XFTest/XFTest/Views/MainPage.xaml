@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+    xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+    x:Class="XFTest.Views.MainPage"
+    BackgroundColor="#f2f2ef"
+    NavigationPage.HasNavigationBar="False">
+
+    <StackLayout
+        HorizontalOptions="CenterAndExpand"
+        VerticalOptions="CenterAndExpand">
+        <Button x:Name="btnCleaningList" Clicked="BtnCleaningList_Clicked" Text="Cleaning List"></Button>
+        <Button x:Name="btnCalendar" Clicked="btnCalendar_Clicked" Text="Calendar"></Button>
+    </StackLayout>
+
+</ContentPage>
