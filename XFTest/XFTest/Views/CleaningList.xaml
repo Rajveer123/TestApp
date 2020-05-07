@@ -3,11 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:customcontrol="clr-namespace:XFTest.CustomControl"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms" 
-             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
              xmlns:views="clr-namespace:XFTest.Views"
                 xmlns:prism="http://prismlibrary.com"
                 prism:ViewModelLocator.AutowireViewModel="True"
@@ -16,7 +12,7 @@
              Title="I DAG" 
              x:Class="XFTest.Views.CleaningList"
              BackgroundColor="#f2f2ef">
-    
+
     <ContentPage.Content>
 
         <StackLayout>
@@ -39,12 +35,12 @@
                         Grid.Row="0" Grid.Column="1" 
 			        >
                     <ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
-                        <TapGestureRecognizer  Command="{Binding ShowDialogCommand}"  NumberOfTapsRequired="1"> </TapGestureRecognizer>
+                        <TapGestureRecognizer  Command="{Binding ShowDialogCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
                     </ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
                 </ffimageloadingsvg:SvgCachedImage>
 
             </Grid>
-            <CollectionView ItemsSource="{Binding Monkeys}" Margin="20,20,20,20">
+            <CollectionView ItemsSource="{Binding CarFitDataCollection}" Margin="20,20,20,20">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Margin="0, 0, 0, 15">
@@ -54,71 +50,13 @@
                                 Padding="10,20,0,10" 
                                 HasShadow="False"
                                 IsClippedToBounds="True" BackgroundColor="#ffffff" CornerRadius="15" >
-                                
 
-                                    <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
-                                    
-                                
+                                <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
+
+
                             </Frame>
                         </StackLayout>
-                        <!--<StackLayout Margin="10">
-                        <Frame CornerRadius="15" Padding="10,10,0,10" HasShadow="False" IsClippedToBounds="True" BackgroundColor="White">
-                                <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="50" />
-                                </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="1"
-                                       Text="{Binding Name}"
-                                       FontSize="18"
-                                       HorizontalTextAlignment="Start"
-                                       HorizontalOptions="Start"
-                                       VerticalOptions="Center"
-                                       FontFamily="{StaticResource BoldFont}" />
-                                <Button BackgroundColor="{Binding Color, Converter={StaticResource StringToColorConverter}}" Style="{StaticResource buttonStyleList}" Grid.Row="1"
-                                   Grid.Column="2"
-                                   Text="{Binding Location}"
-                                   HorizontalOptions="End"
-                                   FontFamily="{StaticResource SemiboldFont}"/>
-                                <Label Grid.Row="2" Grid.ColumnSpan="2"
-                                   Text="{Binding Details}"
-                                   FontSize="12"
-                                       HorizontalTextAlignment="Start"
-                                   FontFamily="{StaticResource RegularFont}" />
-                                <Label Grid.Row="3" 
-                                   Text="{Binding dTime}"
-                                   FontSize="12"
-                                   HorizontalTextAlignment="Start"
-                                   HorizontalOptions="Start"
-                                   FontFamily="{StaticResource RegularFont}" />
-                                <Label Grid.Row="3" Grid.Column="2"
-                                   Text="{Binding dMinute}"
-                                   FontSize="12"
-                                   HorizontalTextAlignment="End"
-                                   Padding="0,0,10,0"
-                                   FontFamily="{StaticResource RegularFont}" />
-                                <Label Grid.Row="4" 
-                                   Text="{Binding Address}"
-                                   FontSize="12"
-                                   HorizontalTextAlignment="Start"
-                                   FontFamily="{StaticResource RegularFont}" />
-                                <Label Grid.Row="4" Grid.Column="2"
-                                   Text="{Binding Distance}"
-                                   FontSize="12"
-                                   HorizontalTextAlignment="End"
-                                   Padding="0,0,10,0"
-                                   FontFamily="{StaticResource RegularFont}" />
-                            </Grid>                            
-                            
-                        </Frame>
-                        </StackLayout>-->
 
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

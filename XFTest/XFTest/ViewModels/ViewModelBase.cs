@@ -3,20 +3,28 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace XFTest.ViewModels
 {
     public class ViewModelBase : BindableBase, IInitialize, INavigationAware, IDestructible
     {
+        //#region Properties
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //#endregion
+
+        //#region Events
+        //public void RaisePropertyChanged([CallerMemberName] String propertyName = "")
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
+        //#endregion
+
         protected INavigationService NavigationService { get; private set; }
 
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+
 
         public ViewModelBase(INavigationService navigationService)
         {

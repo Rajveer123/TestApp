@@ -13,7 +13,6 @@
     <ContentView.Content>
 
         <StackLayout>
-
             <Grid
                 Padding="0">
                 <Grid.RowDefinitions>
@@ -42,14 +41,21 @@
                     <Label
                         x:Name="CardlblTitle"
                         VerticalOptions="Start"
-                        Text="Jeff Peterson"
                         Style="{StaticResource TitleHeading}"
-                        FontFamily="{StaticResource BoldFont}" />
+                        FontFamily="{StaticResource BoldFont}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding houseOwnerFirstName}" />
+                                <Span Text=" " />
+                                <Span Text="{Binding houseOwnerLastName}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
                     <Label
-                        Text=""
                         FontFamily="{StaticResource RegularFont}"
                         TextColor="{StaticResource ColorNormalText}"
-                        Style="{StaticResource FontSizeA14I16BoldNew}" />
+                        Style="{StaticResource FontSizeA14I16BoldNew}" >
+                    </Label>
                 </StackLayout>
 
                 <yummy:PancakeView
@@ -60,7 +66,7 @@
                     <Button
                         x:Name="ButtonStyle"
                         BackgroundColor="#4E77D6"
-                        Text="TODO"
+                        Text="{Binding visitState}"
                         FontFamily="{StaticResource BoldFont}"
                         Style="{StaticResource buttonStyleList}" />
                 </yummy:PancakeView>
@@ -69,7 +75,7 @@
                     x:Name="detailsText"
                     Grid.Row="1"
                     Grid.ColumnSpan="2"
-                    Text="Wash medium, Clean inside"
+                    Text="{Binding title}"
                     FontFamily="{StaticResource RegularFont}"
                     TextColor="{StaticResource ColorNormalText}"
                     Style="{StaticResource FontSizeA14I16New}"
@@ -103,11 +109,17 @@
                             x:Name="Icon1Lbl"
                             Grid.Row="0"
                             Grid.Column="1"
-                            Text="08:15 / 08:00-10:00"
                             FontFamily="{StaticResource RegularFont}"
                             Style="{StaticResource NormalText12New}"
                             HorizontalOptions="FillAndExpand"
-                            HorizontalTextAlignment="Start" />
+                            HorizontalTextAlignment="Start">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding startTime}" />
+                                    <Span Text="{Binding expectedTimeDisplay}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </Grid>
                 </StackLayout>
 
@@ -138,7 +150,7 @@
                             x:Name="Icon2Lbl"
                             Grid.Row="0"
                             Grid.Column="1"
-                            Text="55 min"
+                            Text="{Binding tasksTotalTime}"
                             FontFamily="{StaticResource RegularFont}"
                             Style="{StaticResource NormalText12New}"
                             HorizontalOptions="FillAndExpand"
@@ -173,11 +185,13 @@
                             x:Name="Icon3Lbl"
                             Grid.Row="0"
                             Grid.Column="1"
-                            Text="Marplestreet 22 4560 Eaton"
+                            Text="{Binding houseAddress}"
                             FontFamily="{StaticResource RegularFont}"
                             Style="{StaticResource NormalText12New}"
                             HorizontalOptions="FillAndExpand"
-                            HorizontalTextAlignment="Start" />
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            />
                     </Grid>
                 </StackLayout>
 
