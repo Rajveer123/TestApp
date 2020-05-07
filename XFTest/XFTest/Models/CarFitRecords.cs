@@ -42,9 +42,11 @@ namespace XFTest.Models
         public string houseAddress { get; set; }
         public double houseOwnerLatitude { get; set; }
         public double houseOwnerLongitude { get; set; }
+        public string distance { get; set; }
         public bool isSubscriber { get; set; }
         public string professional { get; set; }
         public string visitState { get; set; }
+        public string backgroundTheme { get; set; }
         public int stateOrder { get; set; }
         public string expectedTime { get; set; }
         public string expectedTimeDisplay { get; set; }

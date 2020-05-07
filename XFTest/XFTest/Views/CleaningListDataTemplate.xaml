@@ -65,7 +65,7 @@
                     HeightRequest="40">
                     <Button
                         x:Name="ButtonStyle"
-                        BackgroundColor="#4E77D6"
+                        BackgroundColor="{Binding backgroundTheme}"
                         Text="{Binding visitState}"
                         FontFamily="{StaticResource BoldFont}"
                         Style="{StaticResource buttonStyleList}" />
@@ -222,7 +222,7 @@
                             x:Name="Icon4Lbl"
                             Grid.Row="0"
                             Grid.Column="1"
-                            Text="3.6 km¯"
+                            Text="{Binding distance}"
                             FontFamily="{StaticResource RegularFont}"
                             Style="{StaticResource NormalText12New}"
                             HorizontalOptions="FillAndExpand"
