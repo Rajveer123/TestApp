@@ -12,6 +12,7 @@ using System.Linq;
 using System;
 using XFTest.Helper;
 using Xamarin.Forms;
+using System.Windows.Input;
 
 namespace XFTest.ViewModels
 {
@@ -28,9 +29,21 @@ namespace XFTest.ViewModels
         public ObservableCollection<Data> CarFitDataCollection { get; private set; }
         //Below class will contains all required utitiley methods
         private UtilityMethods utilityMethods;
+        public ICommand RefreshCommand { get; }
         #endregion
 
-
+        #region Properties
+        bool isRefreshing;
+        public bool IsRefreshing
+        {
+            get => isRefreshing;
+            set
+            {
+                isRefreshing = value;
+                RaisePropertyChanged(nameof(IsRefreshing));
+            }
+        }
+        #endregion
 
         #region Constructor
         public CleaningListViewModel(IDialogService dialogService, INavigationService navigationService)
@@ -41,6 +54,8 @@ namespace XFTest.ViewModels
                 source = new List<Data>();
                 //Initializing UtilityMethods object so we can access its methods
                 utilityMethods = new UtilityMethods();
+                //Initializing RefreshCommand used for PULL to Refresh
+                RefreshCommand = new Command(ExecuteRefreshCommand);
                 //Method for getting CarFit Records from json
                 fetchCarFitRecords();
             }
@@ -53,6 +68,37 @@ namespace XFTest.ViewModels
         #endregion
 
         #region private methods
+        /// <summary>
+        /// Toggle PULL to Refresh Feature: - In which we will display only Data having visitState 'Done', 'In-Progress'
+        /// So you have idea that pull to refresh is working fine 
+        /// And when again pull to refresh we will display total items of list from source object
+        /// Hense acheving Toggle Refresh feature on each pull to refresh
+        /// </summary>
+        private void ExecuteRefreshCommand()
+        {
+            if (IsRefreshing)
+                return;
+            int itemCount = CarFitDataCollection.Count;
+            CarFitDataCollection.Clear();
+            foreach (var item in source)
+            {
+                //If list having all itesms then we have to show filterd item on refresh
+                if (itemCount == source.Count)
+                {
+
+                    if ((item.visitState == "Done" || item.visitState == "InProgress"))
+                        CarFitDataCollection.Add(item);
+                }
+                else
+                {
+                    //If list is already filterd then on refresh we will show all iteams again in list
+                    CarFitDataCollection.Add(item);
+                }
+
+            }
+            // Stop refreshing
+            IsRefreshing = false;
+        }
         /// <summary>
         /// Below method will fetch the vlaues from JSON file
         /// Update some of properties for Data class so we can used in Binding in UI

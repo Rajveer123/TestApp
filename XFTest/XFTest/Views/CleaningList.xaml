@@ -40,28 +40,30 @@
                 </ffimageloadingsvg:SvgCachedImage>
 
             </Grid>
-            <CollectionView ItemsSource="{Binding CarFitDataCollection}" Margin="20,20,20,20">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Margin="0, 0, 0, 15">
-                            <Frame                               
+            <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
+             Command="{Binding RefreshCommand}">
+                <CollectionView ItemsSource="{Binding CarFitDataCollection}" Margin="20,20,20,20">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Margin="0, 0, 0, 15">
+                                <Frame                               
                                 HorizontalOptions="StartAndExpand"
                                 VerticalOptions="StartAndExpand"                                
                                 Padding="10,20,0,10" 
                                 HasShadow="False"
                                 IsClippedToBounds="True" BackgroundColor="#ffffff" CornerRadius="15" >
 
-                                <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
+                                    <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
 
 
-                            </Frame>
-                        </StackLayout>
+                                </Frame>
+                            </StackLayout>
 
 
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
         </StackLayout>
     </ContentPage.Content>
 
