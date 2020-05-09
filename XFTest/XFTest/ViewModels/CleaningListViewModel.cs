@@ -13,6 +13,7 @@ using System;
 using XFTest.Helper;
 using Xamarin.Forms;
 using System.Windows.Input;
+using Xamarin.Forms.PancakeView;
 
 namespace XFTest.ViewModels
 {
@@ -25,14 +26,74 @@ namespace XFTest.ViewModels
         const string TIME_FORMATE = "HH:MM";
         //It will contains the total number of records so next time if we wants to fetch data after perticular date selected by user from calender
         readonly IList<Data> source;
-        //This wil used as bindable property for item source for collectionview
-        public ObservableCollection<Data> CarFitDataCollection { get; private set; }
         //Below class will contains all required utitiley methods
         private UtilityMethods utilityMethods;
-        public ICommand RefreshCommand { get; }
+        private DateTime currentDate = DateTime.Now;
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// CalenderView Property
+        /// Which dynamically loads the calender dates
+        /// </summary>
+        private StackLayout _calenderView;
+        public StackLayout CalenderView
+        {
+            get { return _calenderView ?? (_calenderView = new StackLayout()); }
+            set { _calenderView = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// State Property
+        /// </summary>
+
+        private string _state = "Large";
+        public string State
+        {
+            get { return _state; }
+            set { _state = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// Selected CalenderDate - Initially set today's Date By Default
+        /// </summary>
+        private DateTime _selectedCalenderDate = DateTime.Now;
+        public DateTime SelectedCalenderDate
+        {
+            get { return _selectedCalenderDate; }
+            set { _selectedCalenderDate = value; RaisePropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Calender Title
+        /// </summary>
+        private string _calenderTitle;
+        public string CalenderTitle
+        {
+            get { return _calenderTitle; }
+            set { _calenderTitle = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// Page Title
+        /// </summary>
+        private string _pageTitle = "Today";
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set { _pageTitle = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// CarFitDataCollection Property
+        /// This wil used as bindable property for item source for collectionview 
+        /// </summary>
+        private ObservableCollection<Data> _carFitDataCollection;
+        public ObservableCollection<Data> CarFitDataCollection
+        {
+            get { return _carFitDataCollection ?? (_carFitDataCollection = new ObservableCollection<Data>()); }
+            set { _carFitDataCollection = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// Below Property is used to control Pull To Refresh Feature
+        /// </summary>
         bool isRefreshing;
         public bool IsRefreshing
         {
@@ -41,6 +102,32 @@ namespace XFTest.ViewModels
             {
                 isRefreshing = value;
                 RaisePropertyChanged(nameof(IsRefreshing));
+            }
+        }
+        /// <summary>
+        /// Below Property is used to control visibility of Header View
+        /// </summary>
+        bool isHeaderVisibile = true;
+        public bool HeaderVisibility
+        {
+            get => isHeaderVisibile;
+            set
+            {
+                isHeaderVisibile = value;
+                RaisePropertyChanged(nameof(HeaderVisibility));
+            }
+        }
+        /// <summary>
+        /// Below Property is used to control visibility of Calender View
+        /// </summary>
+        bool isCalenderVisibile = false;
+        public bool CalenderVisibility
+        {
+            get => isCalenderVisibile;
+            set
+            {
+                isCalenderVisibile = value;
+                RaisePropertyChanged(nameof(CalenderVisibility));
             }
         }
         #endregion
@@ -54,10 +141,8 @@ namespace XFTest.ViewModels
                 source = new List<Data>();
                 //Initializing UtilityMethods object so we can access its methods
                 utilityMethods = new UtilityMethods();
-                //Initializing RefreshCommand used for PULL to Refresh
-                RefreshCommand = new Command(ExecuteRefreshCommand);
                 //Method for getting CarFit Records from json
-                fetchCarFitRecords();
+                FetchCarFitRecords();
             }
             catch (Exception ex)
             {
@@ -67,7 +152,113 @@ namespace XFTest.ViewModels
         }
         #endregion
 
+        #region Commands
+        /// <summary>
+        /// Handle Arrow Command of calender view to load next / previous month calender
+        /// </summary>
+        private Command<string> _handleArrowCommand;
+        public Command<string> HandleArrowCommand
+        {
+            get => _handleArrowCommand ?? (_handleArrowCommand = new Command<string>(ExecuteHandleArrowCommand));
+            set
+            {
+                _handleArrowCommand = value;
+            }
+        }
+        /// <summary>
+        /// Handle Calendar Date Selection Command of calender view once user selects any date
+        /// </summary>
+        private Command<string> _handleCalendarDateSelectionCommand;
+        public Command<string> HandleCalendarDateSelectionCommand
+        {
+            get => _handleCalendarDateSelectionCommand ?? (_handleCalendarDateSelectionCommand = new Command<string>(ExecuteCalendarDateSelectionCommand));
+            set
+            {
+                _handleCalendarDateSelectionCommand = value;
+            }
+        }
+        /// <summary>
+        /// Show Dialog Command used for for displaying calender view
+        /// </summary>
+        private ICommand _showDialogCommand;
+        public ICommand ShowDialogCommand
+        {
+            get => _showDialogCommand ?? (_showDialogCommand = new Command(ExecuteShowDialogCommand));
+            set
+            {
+                _showDialogCommand = value;
+            }
+        }
+        /// <summary>
+        /// Refresh Command used for Pull to Refresh Feature
+        /// </summary>
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get => _refreshCommand ?? (_refreshCommand = new Command(ExecuteRefreshCommand));
+            set
+            {
+                _refreshCommand = value;
+            }
+        }
+        #endregion
+
         #region private methods
+        /// <summary>
+        /// ExecuteHandleArrowCommand
+        /// This will used to load next or preevious month calender dates based on arrowType clicked by user
+        /// </summary>
+        /// <param name="arrowType"></param>
+        private void ExecuteHandleArrowCommand(string arrowType)
+        {
+            try
+            {
+                DateTime newCalenderMonth;
+                if (arrowType == "previous")
+                {
+                    newCalenderMonth = currentDate.AddMonths(-1);
+
+                }
+                else
+                {
+                    newCalenderMonth = currentDate.AddMonths(1);
+                }
+                //Setting modified date in currentDate again
+                currentDate = newCalenderMonth;
+                //And by selecting today's date by default selected
+                List<DateTime> dates = utilityMethods.GetDates(currentDate.Year, currentDate.Month);
+                //Load the Calender View Based on above dates
+                LoadCalenderViewDates(dates);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception At ExecuteHandleArrowCommand Methood : {0}", ex.Message);
+            }
+        }
+        /// <summary>
+        /// Execute Calendar Date Selection Command
+        /// It will first hide the calender view and display Header view
+        /// Secondly This will load the carfit list data based on date selected by user
+        /// </summary>
+        private void ExecuteCalendarDateSelectionCommand(string selectedCalenderDate)
+        {
+            try
+            {
+                HeaderVisibility = true;
+                CalenderVisibility = false;
+                //Update the page title once date selected from calender i.e Today or Date along with Month and Year
+                PageTitle = (((DateTime.Now.Year == currentDate.Year) && (DateTime.Now.Month == currentDate.Month) && ((DateTime.Now.Day == Convert.ToInt32(selectedCalenderDate))))) ? "Today" : (selectedCalenderDate + " " + currentDate.ToString("MMMM") + " " + currentDate.Year);
+                //Update the selected calender date value based on user date selection
+                //So next time when calender gets open it shows the last selected date
+                SelectedCalenderDate = new DateTime(currentDate.Year, currentDate.Month, Convert.ToInt32(selectedCalenderDate));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception At ExecuteCalendarDateSelectionCommand Methood : {0}", ex.Message);
+            }
+        }
+
         /// <summary>
         /// Toggle PULL to Refresh Feature: - In which we will display only Data having visitState 'Done', 'In-Progress'
         /// So you have idea that pull to refresh is working fine 
@@ -76,28 +267,133 @@ namespace XFTest.ViewModels
         /// </summary>
         private void ExecuteRefreshCommand()
         {
-            if (IsRefreshing)
-                return;
-            int itemCount = CarFitDataCollection.Count;
-            CarFitDataCollection.Clear();
-            foreach (var item in source)
+            try
             {
-                //If list having all itesms then we have to show filterd item on refresh
-                if (itemCount == source.Count)
+                if (IsRefreshing)
+                    return;
+                int itemCount = CarFitDataCollection.Count;
+                CarFitDataCollection.Clear();
+                foreach (var item in source)
                 {
+                    //If list having all itesms then we have to show filterd item on refresh
+                    if (itemCount == source.Count)
+                    {
 
-                    if ((item.visitState == "Done" || item.visitState == "InProgress"))
+                        if ((item.visitState == "Done" || item.visitState == "InProgress"))
+                            CarFitDataCollection.Add(item);
+                    }
+                    else
+                    {
+                        //If list is already filterd then on refresh we will show all iteams again in list
                         CarFitDataCollection.Add(item);
+                    }
+
                 }
-                else
-                {
-                    //If list is already filterd then on refresh we will show all iteams again in list
-                    CarFitDataCollection.Add(item);
-                }
+                // Stop refreshing
+                IsRefreshing = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception At ExecuteRefreshCommand Methood : {0}", ex.Message);
+            }
+        }
+        /// <summary>
+        /// Below method will hides the header bar and display Calender View at that place
+        /// Also we will display current month calender dates once calender is opened
+        /// </summary>
+        private void ExecuteShowDialogCommand()
+        {
+            try
+            {
+                //Load the calender first time with current month and year
+                //And by selecting today's date by default selected
+                List<DateTime> dates = utilityMethods.GetDates(currentDate.Year, currentDate.Month);
+                //Load the Calender View Based on above dates
+                LoadCalenderViewDates(dates);
+                HeaderVisibility = false;
+                CalenderVisibility = true;
 
             }
-            // Stop refreshing
-            IsRefreshing = false;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception At ExecuteShowDialogCommand Methood : {0}", ex.Message);
+            }
+        }
+        //Below Method will load the calender dates
+        private void LoadCalenderViewDates(List<DateTime> calenderDates)
+        {
+            //Update Calender Title with Month and Year
+            CalenderTitle = currentDate.ToString("MMMM").Substring(0, 3).ToUpper() + " " + currentDate.Year;
+
+            //Check if already data is there then clear it first before loading new dates 
+            if (CalenderView.Children.Any())
+                CalenderView.Children.Clear();
+            CalenderView.Orientation = StackOrientation.Horizontal;
+            foreach (var calenderDate in calenderDates)
+            {
+                StackLayout stackLayout = new StackLayout() { HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+                stackLayout.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = HandleCalendarDateSelectionCommand,
+                    CommandParameter = calenderDate.Day.ToString(),
+                    NumberOfTapsRequired = 1
+                });
+                Grid grid = new Grid();
+                grid.VerticalOptions = LayoutOptions.FillAndExpand;
+                grid.HorizontalOptions = LayoutOptions.FillAndExpand;
+                grid.Style = (Style)Application.Current.Resources["CalDatePad"];
+                VisualStateManager.GoToState(grid, State);
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+
+                PancakeView view = new PancakeView();
+                view.HorizontalOptions = LayoutOptions.FillAndExpand;
+                view.VerticalOptions = LayoutOptions.FillAndExpand;
+                //If it matches with current date then set background color
+                if ((calenderDate.Year == SelectedCalenderDate.Year) && (calenderDate.Month == SelectedCalenderDate.Month) && (calenderDate.Day == SelectedCalenderDate.Day))
+                {
+                    view.CornerRadius = Device.RuntimePlatform == Device.iOS ? new CornerRadius(15) : new CornerRadius(26);
+                    view.BackgroundColor = Color.FromHex("#368268");
+                }
+                Label dateLabel = new Label
+                {
+                    FontFamily = Application.Current.Resources["BoldFont"] as string,
+                    Style = (Style)Application.Current.Resources["CalDateText"],
+                    Text = calenderDate.Day.ToString(),
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HeightRequest = Device.RuntimePlatform == Device.iOS ? 30 : 28,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    Padding = Device.RuntimePlatform == Device.iOS ? new Thickness(10) : new Thickness(5),
+                    TextColor = (Color)Application.Current.Resources["ColorBluishGrey"]
+                };
+                VisualStateManager.GoToState(dateLabel, State);
+                view.Content = dateLabel;
+
+                Grid.SetColumn(view, 0);
+                Grid.SetRow(view, 0);
+                grid.Children.Add(view);
+
+                Label dayLabel = new Label
+                {
+                    FontFamily = Application.Current.Resources["RegularFont"] as string,
+                    Style = (Style)Application.Current.Resources["NormalText11Cal"],
+                    Text = calenderDate.DayOfWeek.ToString().Substring(0, 3),
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    TextColor = (Color)Application.Current.Resources["ColorBluishGrey"]
+                };
+                VisualStateManager.GoToState(dayLabel, State);
+                Grid.SetColumn(dayLabel, 0);
+                Grid.SetRow(dayLabel, 1);
+                grid.Children.Add(dayLabel);
+
+                //Adding Grid to Stack Layout
+                stackLayout.Children.Add(grid);
+
+                //Adding StackLayout to Main StackLayout
+                CalenderView.Children.Add(stackLayout);
+            }
+
         }
         /// <summary>
         /// Below method will fetch the vlaues from JSON file
@@ -106,11 +402,10 @@ namespace XFTest.ViewModels
         //  Get CarFitDataCollection values from source itself 
         /// Set CarFitDataCollection as CollectionView ItemsSource
         /// </summary>
-        private void fetchCarFitRecords()
+        private void FetchCarFitRecords()
         {
             try
             {
-
                 carFitCounter = 0;
                 string jsonFileName = "CarFitData.json";
                 var assembly = typeof(CleaningListViewModel).GetTypeInfo().Assembly;
@@ -124,7 +419,7 @@ namespace XFTest.ViewModels
                         JsonConvert.DeserializeObject<CarFitRecords>(jsonString).data.ForEach(
 
                             //Change the formate for some Data calss properties based on requirement
-                            car => updateCarFitData(car, JsonConvert.DeserializeObject<CarFitRecords>(jsonString).data)
+                            car => UpdateCarFitData(car, JsonConvert.DeserializeObject<CarFitRecords>(jsonString).data)
                          );
 
                 }
@@ -137,10 +432,10 @@ namespace XFTest.ViewModels
             }
         }
         /// <summary>
-        /// Main method which used to update some of Data class properties based on our requirement
+        /// Main method which used to update some of Data class properties based on our requirement before display it on UI list
         /// Handle null cheeck and if value is there then only assign that property value otherwise set as blank value so in UI it will not displyed
         /// </summary>
-        private Data updateCarFitData(Data car, List<Data> carFitData)
+        private Data UpdateCarFitData(Data car, List<Data> carFitData)
         {
             try
             {

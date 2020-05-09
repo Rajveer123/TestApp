@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace XFTest.Helper
@@ -76,6 +77,18 @@ namespace XFTest.Helper
                 default:
                     return "#EF6565";
             }
+        }
+        ///<summary>
+        ///Method which return dates based on year and month we passed
+        ///</summary>
+        public List<DateTime> GetDates(int year, int month)
+        {
+            var days = new List<DateTime>();
+            for (int i = 1; i <= DateTime.DaysInMonth(year, month); i++)
+            {
+                days.Add(new DateTime(year, month, i));
+            }
+            return days;
         }
     }
 }

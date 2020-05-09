@@ -14,7 +14,7 @@
         HorizontalOptions="CenterAndExpand"
         VerticalOptions="CenterAndExpand">
         <Button x:Name="btnCleaningList" Clicked="BtnCleaningList_Clicked" Text="Cleaning List"></Button>
-        <Button x:Name="btnCalendar" Clicked="btnCalendar_Clicked" Text="Calendar"></Button>
+        <!--<Button x:Name="btnCalendar" Clicked="btnCalendar_Clicked" Text="Calendar"></Button>-->
     </StackLayout>
 
 </ContentPage>

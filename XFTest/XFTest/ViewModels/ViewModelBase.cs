@@ -11,17 +11,6 @@ namespace XFTest.ViewModels
 {
     public class ViewModelBase : BindableBase, IInitialize, INavigationAware, IDestructible
     {
-        //#region Properties
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //#endregion
-
-        //#region Events
-        //public void RaisePropertyChanged([CallerMemberName] String propertyName = "")
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
-        //#endregion
-
         protected INavigationService NavigationService { get; private set; }
 
 

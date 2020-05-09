@@ -19,10 +19,10 @@ namespace XFTest.Views
             await Navigation.PushAsync(new Views.CleaningList());
         }
 
-        private async void btnCalendar_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new Calendar());
-        }
+        //private async void btnCalendar_Clicked(object sender, EventArgs e)
+        //{
+        //    //await Navigation.PushAsync(new Calendar());
+        //}
 
     }
 }

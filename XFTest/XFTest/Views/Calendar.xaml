@@ -1,16 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms" 
              xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
              mc:Ignorable="d"
              x:Class="XFTest.Views.Calendar"
              NavigationPage.HasNavigationBar="False">
-    <ContentPage.Content>
+    <ContentView.Content>
         <StackLayout>
 
             <Grid Padding="0" BackgroundColor="#25A87B" >
@@ -34,7 +32,7 @@
                             <ColumnDefinition Width="0.5*" />
                         </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Margin="{OnPlatform iOS='0,55,0,0', Android='0,30,0,0'}" Text="Nov 2019" 
+                        <Label Grid.Row="0" Grid.Column="0" Margin="{OnPlatform iOS='0,55,0,0', Android='0,30,0,0'}" Text="{Binding CalenderTitle}" 
                                Style="{StaticResource PageHeading}" 
                                HorizontalTextAlignment="Start" 
                                FontFamily="{StaticResource BoldFont}"  FontSize="{StaticResource FontSizeA20I23}" TextColor="#FFFFFF" />
@@ -43,22 +41,33 @@
                                 WidthRequest="12" 
                                 Grid.Row="0" Grid.Column="1"
                                 HorizontalOptions="End"
-			                />
+			                >
+                            <ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+                                <TapGestureRecognizer  Command="{Binding HandleArrowCommand}" CommandParameter="previous"  NumberOfTapsRequired="1"></TapGestureRecognizer>
+                            </ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+                        </ffimageloadingsvg:SvgCachedImage>
+
                         <ffimageloadingsvg:SvgCachedImage Margin="{OnPlatform iOS='0,60,0,0', Android='0,30,0,0'}" 
                                 Source="Arrow_Right.svg" 
                                 WidthRequest="12" 
                                 Grid.Row="0" Grid.Column="2"
                                 HorizontalOptions="End"
-			                />
-
+			                >
+                            <ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+                                <TapGestureRecognizer  Command="{Binding HandleArrowCommand}" CommandParameter="next" NumberOfTapsRequired="1"></TapGestureRecognizer>
+                            </ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+                        </ffimageloadingsvg:SvgCachedImage>
                     </Grid>
 
 
                     <ScrollView BackgroundColor="#25A87B" Orientation="Horizontal" Padding="0, 0, 0, 0" >
-                        <StackLayout Orientation="Horizontal">
-
-                            <StackLayout HorizontalOptions="StartAndExpand" >
-                                <Grid x:Name="calPad01" Style="{StaticResource CalDatePad}" >
+                        <ContentView Content="{Binding CalenderView}" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand"/>
+                        <!--<StackLayout Orientation="Horizontal">
+                            <StackLayout HorizontalOptions="StartAndExpand">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer  Command="{Binding HandleCalendarDateSelectionCommand}" CommandParameter="1" NumberOfTapsRequired="1"></TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers>
+                                <Grid x:Name="calPad01" Style="{StaticResource CalDatePad}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -76,7 +85,7 @@
                                             HorizontalOptions="CenterAndExpand"
                                             HeightRequest="35"
                                             Padding="4,10,4,0"
-                                            />
+                                            ></Label>
                                     </yummy:PancakeView>
                                     <Label 
                                        Grid.Row="1" Grid.Column="0"
@@ -510,7 +519,7 @@
 
 
 
-                        </StackLayout>
+                        </StackLayout> -->
                     </ScrollView>
 
                 </StackLayout>
@@ -518,5 +527,5 @@
             </Grid>
 
         </StackLayout>
-    </ContentPage.Content>
-</ContentPage>
+    </ContentView.Content>
+</ContentView>
