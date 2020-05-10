@@ -26,6 +26,8 @@ namespace XFTest.ViewModels
         const string TIME_FORMATE = "HH:MM";
         //It will contains the total number of records so next time if we wants to fetch data after perticular date selected by user from calender
         readonly IList<Data> source;
+        //Used to Assigned Filtered Dates after date selection and on pull to refresh
+        ObservableCollection<Data> filteredCarfitData = new ObservableCollection<Data>();
         //Below class will contains all required utitiley methods
         private UtilityMethods utilityMethods;
         private DateTime currentDate = DateTime.Now;
@@ -80,6 +82,24 @@ namespace XFTest.ViewModels
         {
             get { return _pageTitle; }
             set { _pageTitle = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// Empty View Header Label Title
+        /// </summary>
+        private string _emptyViewHeaderLabel;
+        public string EmptyViewHeaderLabel
+        {
+            get { return _emptyViewHeaderLabel; }
+            set { _emptyViewHeaderLabel = value; RaisePropertyChanged(); }
+        }
+        /// <summary>
+        /// Empty View SubTitle Label Title
+        /// </summary>
+        private string _emptyViewSubTitleLabel;
+        public string EmptyViewSubTitleLabel
+        {
+            get { return _emptyViewSubTitleLabel; }
+            set { _emptyViewSubTitleLabel = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// CarFitDataCollection Property
@@ -249,9 +269,27 @@ namespace XFTest.ViewModels
                 CalenderVisibility = false;
                 //Update the page title once date selected from calender i.e Today or Date along with Month and Year
                 PageTitle = (((DateTime.Now.Year == currentDate.Year) && (DateTime.Now.Month == currentDate.Month) && ((DateTime.Now.Day == Convert.ToInt32(selectedCalenderDate))))) ? "Today" : (selectedCalenderDate + " " + currentDate.ToString("MMMM") + " " + currentDate.Year);
+                EmptyViewHeaderLabel = "Sorry!! No Carfit Order Records Found For Selected Date";
+                EmptyViewSubTitleLabel = "Try To Select Different Date From Calender.";
                 //Update the selected calender date value based on user date selection
                 //So next time when calender gets open it shows the last selected date
                 SelectedCalenderDate = new DateTime(currentDate.Year, currentDate.Month, Convert.ToInt32(selectedCalenderDate));
+                //Clear Collection and filteredCarfitData List Data
+                CarFitDataCollection.Clear();
+                filteredCarfitData.Clear();
+                //Get Filter data based on date selected by user
+                foreach (var item in source)
+                {
+                    DateTime date = (DateTime)Convert.ChangeType(item.startTimeUtc, typeof(DateTime));
+                    //If list having all itesms then we have to show filterd item on refresh
+                    if ((date.Year == SelectedCalenderDate.Year) && (date.Month == SelectedCalenderDate.Month) && (date.Day == SelectedCalenderDate.Day))
+                    {
+                        filteredCarfitData.Add(item);
+                    }
+                }
+
+                //Adding Final Filtered Data in CarFitDataCollection after Calculating Distance between them
+                CarFitDataCollection = utilityMethods.CalculateDistance(filteredCarfitData);
             }
             catch (Exception ex)
             {
@@ -272,23 +310,28 @@ namespace XFTest.ViewModels
                 if (IsRefreshing)
                     return;
                 int itemCount = CarFitDataCollection.Count;
+                //Clear Collection and filteredCarfitData List Data
                 CarFitDataCollection.Clear();
+                filteredCarfitData.Clear();
+                //Get Filter data based on PUlL ReFresh Feature Data having "Done" Status only 
                 foreach (var item in source)
                 {
-                    //If list having all itesms then we have to show filterd item on refresh
+                    //If list having all itesms then we have to show filterd item on pull refresh Data having "Done" Status
                     if (itemCount == source.Count)
                     {
-
-                        if ((item.visitState == "Done" || item.visitState == "InProgress"))
-                            CarFitDataCollection.Add(item);
+                        if ((item.visitState == "Done"))
+                            filteredCarfitData.Add(item);
                     }
                     else
                     {
                         //If list is already filterd then on refresh we will show all iteams again in list
-                        CarFitDataCollection.Add(item);
+                        filteredCarfitData.Add(item);
                     }
-
                 }
+
+                //Adding Final Filtered Data in CarFitDataCollection after Calculating Distance between them if we have data with only visitStatus = Done
+                CarFitDataCollection = (itemCount == source.Count) ? utilityMethods.CalculateDistance(filteredCarfitData) : filteredCarfitData;
+
                 // Stop refreshing
                 IsRefreshing = false;
             }
@@ -347,13 +390,19 @@ namespace XFTest.ViewModels
                 grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
 
-                PancakeView view = new PancakeView();
+                Frame view = new Frame();
                 view.HorizontalOptions = LayoutOptions.FillAndExpand;
                 view.VerticalOptions = LayoutOptions.FillAndExpand;
+                view.HeightRequest = 30;
+                view.WidthRequest = 30;
+                view.Margin = 0;
+                view.Padding = 0;
+                view.HasShadow = false;
+                view.BackgroundColor = Color.Transparent;
                 //If it matches with current date then set background color
                 if ((calenderDate.Year == SelectedCalenderDate.Year) && (calenderDate.Month == SelectedCalenderDate.Month) && (calenderDate.Day == SelectedCalenderDate.Day))
                 {
-                    view.CornerRadius = Device.RuntimePlatform == Device.iOS ? new CornerRadius(15) : new CornerRadius(26);
+                    view.CornerRadius = 15;
                     view.BackgroundColor = Color.FromHex("#368268");
                 }
                 Label dateLabel = new Label
@@ -362,10 +411,10 @@ namespace XFTest.ViewModels
                     Style = (Style)Application.Current.Resources["CalDateText"],
                     Text = calenderDate.Day.ToString(),
                     HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    HeightRequest = Device.RuntimePlatform == Device.iOS ? 30 : 28,
                     VerticalTextAlignment = TextAlignment.Center,
-                    Padding = Device.RuntimePlatform == Device.iOS ? new Thickness(10) : new Thickness(5),
-                    TextColor = (Color)Application.Current.Resources["ColorBluishGrey"]
+                    Padding = 0,
+                    TextColor = (Color)Application.Current.Resources["ColorBluishGrey"],
+                    Margin = 0
                 };
                 VisualStateManager.GoToState(dateLabel, State);
                 view.Content = dateLabel;
@@ -423,8 +472,10 @@ namespace XFTest.ViewModels
                          );
 
                 }
-                //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object      
-                CarFitDataCollection = new ObservableCollection<Data>(source);
+                //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
+                //After Calcualting Distancee between each places
+                //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
+                CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
             }
             catch (Exception ex)
             {
@@ -453,22 +504,7 @@ namespace XFTest.ViewModels
                 car.tasksTotalTime = !string.IsNullOrEmpty(car.tasksTotalTime) ? car.tasksTotalTime + " min" : string.Empty;
                 //Combine all three address in one property in Data class and used that in Binding for displaying full address
                 car.houseAddress = utilityMethods.GetFullAddress(car.houseOwnerAddress, car.houseOwnerZip, car.houseOwnerCity);
-                //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
-                //Until we does not reached to the last place we will take lat long for subsciquest places
-                //And once reached at the last place then we will calculate his distance from first place so last entry of list will show distance between first element of list and last element
-                if (carFitCounter != carFitData.Count - 1)
-                {
-                    //Comparing distance for two subsequest places i.e 1-2, 2-3,4-5...9-10
-                    //Allow only one digit after decimal for displaying value of distance
-                    car.distance = string.Format("{0:0.0}", (utilityMethods.GetDistance(carFitData[carFitCounter].houseOwnerLatitude, carFitData[carFitCounter].houseOwnerLongitude, carFitData[carFitCounter + 1].houseOwnerLatitude, carFitData[carFitCounter + 1].houseOwnerLongitude, 'K'))) + " km";
 
-                }
-                else
-                {
-                    //Once reached the last place Comparing that place distance from first place i.e 10-1
-                    //Allow only one digit after decimal for displaying value of distance
-                    car.distance = string.Format("{0:0.0}", (utilityMethods.GetDistance(carFitData[carFitCounter].houseOwnerLatitude, carFitData[carFitCounter].houseOwnerLongitude, carFitData[0].houseOwnerLatitude, carFitData[0].houseOwnerLongitude, 'K'))) + " km";
-                }
                 //Adding Final Data Object in to source
                 source.Add(car);
                 carFitCounter++;

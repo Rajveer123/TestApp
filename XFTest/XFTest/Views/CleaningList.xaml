@@ -45,7 +45,7 @@
 
             <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
              Command="{Binding RefreshCommand}">
-                <CollectionView ItemsSource="{Binding CarFitDataCollection}" Margin="20,20,20,20">
+                <CollectionView ItemsSource="{Binding CarFitDataCollection,Mode=TwoWay}" Margin="20,20,20,20">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout Margin="0, 0, 0, 15">
@@ -55,16 +55,26 @@
                                 Padding="10,20,0,10" 
                                 HasShadow="False"
                                 IsClippedToBounds="True" BackgroundColor="#ffffff" CornerRadius="15" >
-
                                     <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
-
-
                                 </Frame>
                             </StackLayout>
-
-
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <StackLayout>
+                            <Label Text="{Binding EmptyViewHeaderLabel}"
+                       Margin="10,25,10,10"
+                       FontAttributes="Bold"
+                       FontSize="18"
+                       HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding EmptyViewSubTitleLabel}"
+                       FontAttributes="Italic"
+                       FontSize="12"
+                       HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                    </CollectionView.EmptyView>
                 </CollectionView>
             </RefreshView>
         </StackLayout>

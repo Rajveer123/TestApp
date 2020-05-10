@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using XFTest.Models;
 
 namespace XFTest.Helper
 {
     public class UtilityMethods
     {
+        const char DISTANCE_CALCULATION_UNIT = 'K';
         /// <summary>
         //Method to get Distance in km based on lat long values
         //lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  
@@ -89,6 +92,33 @@ namespace XFTest.Helper
                 days.Add(new DateTime(year, month, i));
             }
             return days;
+        }
+        ///<summary>
+        ///Method which calculates the distance between places
+        ///For first place we are seetting 0 km as it is starting point
+        ///For rest of other points it will calculate distance adjustance to each other i.e 0-1, 1-2,2-3...
+        ///</summary>
+        public ObservableCollection<Data> CalculateDistance(ObservableCollection<Data> carFitListData)
+        {
+            int carFitCounter = 0;
+            foreach (var car in carFitListData)
+            {
+                if (carFitCounter == 0)
+                {
+                    car.distance = "0.0 km";
+                    carFitCounter++;
+                    continue;
+                }
+                else
+                {
+                    //Comparing distance for two subsequest places i.e 1-2, 2-3,4-5...9-10
+                    //Allow only one digit after decimal for displaying value of distance
+                    car.distance = string.Format("{0:0.0}", (GetDistance(carFitListData[carFitCounter - 1].houseOwnerLatitude, carFitListData[carFitCounter - 1].houseOwnerLongitude, carFitListData[carFitCounter].houseOwnerLatitude, carFitListData[carFitCounter].houseOwnerLongitude, DISTANCE_CALCULATION_UNIT))) + " km";
+                }
+
+                carFitCounter++;
+            }
+            return carFitListData;
         }
     }
 }
