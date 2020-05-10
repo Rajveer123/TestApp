@@ -16,9 +16,6 @@
     <ContentPage.Content>
 
         <StackLayout>
-            <!--<StackLayout.GestureRecognizers>
-                <TapGestureRecognizer  Command="{Binding HandleCalendarDateSelectionCommand}" CommandParameter="1" NumberOfTapsRequired="1"></TapGestureRecognizer>
-            </StackLayout.GestureRecognizers>-->
             <Grid Padding="0" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -45,6 +42,9 @@
 
             <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
              Command="{Binding RefreshCommand}">
+                <RefreshView.GestureRecognizers>
+                    <TapGestureRecognizer  Command="{Binding HandleOutSideClickCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
+                </RefreshView.GestureRecognizers>
                 <CollectionView ItemsSource="{Binding CarFitDataCollection,Mode=TwoWay}" Margin="20,20,20,20">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -61,7 +61,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                     <CollectionView.EmptyView>
-                        <StackLayout>
+                        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
                             <Label Text="{Binding EmptyViewHeaderLabel}"
                        Margin="10,25,10,10"
                        FontAttributes="Bold"

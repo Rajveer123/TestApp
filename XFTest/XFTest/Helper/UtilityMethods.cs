@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using XFTest.Enums;
 using XFTest.Models;
 
 namespace XFTest.Helper
@@ -9,6 +10,10 @@ namespace XFTest.Helper
     public class UtilityMethods
     {
         const char DISTANCE_CALCULATION_UNIT = 'K';
+        const string TODO_COLOR = "#4E77D6";
+        const string INPROGRESS_COLOR = "#F5C709";
+        const string DONE_COLOR = "#25A87B";
+        const string REJECTED_COLOR = "#EF6565";
         /// <summary>
         //Method to get Distance in km based on lat long values
         //lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  
@@ -69,16 +74,16 @@ namespace XFTest.Helper
         ///</summary>
         public string GetBackgroundThemColor(string state)
         {
-            switch (state)
+            switch (EnumHelper.Parse<VisitStates>(state))
             {
-                case "ToDo":
-                    return "#4E77D6";
-                case "InProgress":
-                    return "#F5C709";
-                case "Done":
-                    return "#25A87B";
+                case VisitStates.ToDo:
+                    return TODO_COLOR;
+                case VisitStates.InProgress:
+                    return INPROGRESS_COLOR;
+                case VisitStates.Done:
+                    return DONE_COLOR;
                 default:
-                    return "#EF6565";
+                    return REJECTED_COLOR;
             }
         }
         ///<summary>

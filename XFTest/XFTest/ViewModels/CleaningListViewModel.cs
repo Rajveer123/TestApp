@@ -14,6 +14,7 @@ using XFTest.Helper;
 using Xamarin.Forms;
 using System.Windows.Input;
 using Xamarin.Forms.PancakeView;
+using XFTest.Enums;
 
 namespace XFTest.ViewModels
 {
@@ -221,6 +222,19 @@ namespace XFTest.ViewModels
                 _refreshCommand = value;
             }
         }
+        /// <summary>
+        /// Refresh Command used for Pull to Refresh Feature
+        /// </summary>
+        private ICommand _handleOutSideClickCommand;
+        public ICommand HandleOutSideClickCommand
+        {
+            get => _handleOutSideClickCommand ?? (_handleOutSideClickCommand = new Command(ExecuteHandleOutSideClickCommand));
+            set
+            {
+                _handleOutSideClickCommand = value;
+            }
+        }
+
         #endregion
 
         #region private methods
@@ -257,6 +271,15 @@ namespace XFTest.ViewModels
             }
         }
         /// <summary>
+        /// Execute Handle OutSide Click of Calendar Command
+        /// It will first hide the calender view and display Header view
+        /// </summary>
+        private void ExecuteHandleOutSideClickCommand()
+        {
+            HeaderVisibility = true;
+            CalenderVisibility = false;
+        }
+        /// <summary>
         /// Execute Calendar Date Selection Command
         /// It will first hide the calender view and display Header view
         /// Secondly This will load the carfit list data based on date selected by user
@@ -269,7 +292,7 @@ namespace XFTest.ViewModels
                 CalenderVisibility = false;
                 //Update the page title once date selected from calender i.e Today or Date along with Month and Year
                 PageTitle = (((DateTime.Now.Year == currentDate.Year) && (DateTime.Now.Month == currentDate.Month) && ((DateTime.Now.Day == Convert.ToInt32(selectedCalenderDate))))) ? "Today" : (selectedCalenderDate + " " + currentDate.ToString("MMMM") + " " + currentDate.Year);
-                EmptyViewHeaderLabel = "Sorry!! No Carfit Order Records Found For Selected Date";
+                EmptyViewHeaderLabel = "Sorry!! No CarFit Order Records Found For Selected Date";
                 EmptyViewSubTitleLabel = "Try To Select Different Date From Calender.";
                 //Update the selected calender date value based on user date selection
                 //So next time when calender gets open it shows the last selected date
@@ -310,14 +333,14 @@ namespace XFTest.ViewModels
                 if (IsRefreshing)
                     return;
                 int itemCount = CarFitDataCollection.Count;
-                //Clear Collection and filteredCarfitData List Data
+                //Clear Collection filteredCarfitData List Data
                 CarFitDataCollection.Clear();
                 filteredCarfitData.Clear();
                 //Get Filter data based on PUlL ReFresh Feature Data having "Done" Status only 
                 foreach (var item in source)
                 {
                     //If list having all itesms then we have to show filterd item on pull refresh Data having "Done" Status
-                    if (itemCount == source.Count)
+                    if ((itemCount == source.Count))
                     {
                         if ((item.visitState == "Done"))
                             filteredCarfitData.Add(item);
@@ -491,7 +514,7 @@ namespace XFTest.ViewModels
             try
             {
                 //Setting Button Background Color Theme
-                car.backgroundTheme = utilityMethods.GetBackgroundThemColor(car.visitState);
+                car.backgroundTheme = utilityMethods.GetBackgroundThemColor((car.visitState));
                 //Setting Requried time formate based on task requirement
                 car.startTime = (true ? car.startTimeUtc.ToString(TIME_FORMATE) : string.Empty);
                 //Replacing '/' into '-' for expectedTimeDisplay based on UI task requirement

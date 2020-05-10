@@ -38,5 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helper\" />
+    <Folder Include="Enums\" />
   </ItemGroup>
 </Project>
