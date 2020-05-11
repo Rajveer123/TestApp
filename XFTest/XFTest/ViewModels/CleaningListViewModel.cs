@@ -1,41 +1,44 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using XFTest.Models;
-using Prism.Mvvm;
 using Prism.Navigation;
-using Prism.Services.Dialogs;
-using System.Reflection;
-using System.IO;
-using Newtonsoft.Json;
 using System.Linq;
 using System;
 using XFTest.Helper;
 using Xamarin.Forms;
 using System.Windows.Input;
-using Xamarin.Forms.PancakeView;
-using XFTest.Enums;
+using XFTest.Interface;
 
 namespace XFTest.ViewModels
 {
-    public class CleaningListViewModel : BindableBase, INotifyPropertyChanged
+    public class CleaningListViewModel : ViewModelBase, INavigationAware
     {
         #region private / public members
-        //used to get count for row in for each
-        int carFitCounter = 0;
+        private readonly ICarFitApiService _apiService;
         //Time formate we are going to use for displaying startTime
         const string TIME_FORMATE = "HH:MM";
-        //It will contains the total number of records so next time if we wants to fetch data after perticular date selected by user from calender
-        readonly IList<Data> source;
         //Used to Assigned Filtered Dates after date selection and on pull to refresh
         ObservableCollection<Data> filteredCarfitData = new ObservableCollection<Data>();
+        private DateTime currentDate = DateTime.Now;
+        //It will contains the total number of records so next time if we wants to fetch data after perticular date selected by user from calender
+        public readonly IList<Data> source;
         //Below class will contains all required utitiley methods
         private UtilityMethods utilityMethods;
-        private DateTime currentDate = DateTime.Now;
+        //used to get count for row in for each
+        int carFitCounter = 0;
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// CarFitDataCollection Property
+        /// This wil used as bindable property for item source for collectionview 
+        /// </summary>
+        private ObservableCollection<Data> _carFitDataCollection;
+        public ObservableCollection<Data> CarFitDataCollection
+        {
+            get { return _carFitDataCollection ?? (_carFitDataCollection = new ObservableCollection<Data>()); }
+            set { _carFitDataCollection = value; RaisePropertyChanged("CarFitDataCollection"); }
+        }
         /// <summary>
         /// CalenderView Property
         /// Which dynamically loads the calender dates
@@ -102,16 +105,7 @@ namespace XFTest.ViewModels
             get { return _emptyViewSubTitleLabel; }
             set { _emptyViewSubTitleLabel = value; RaisePropertyChanged(); }
         }
-        /// <summary>
-        /// CarFitDataCollection Property
-        /// This wil used as bindable property for item source for collectionview 
-        /// </summary>
-        private ObservableCollection<Data> _carFitDataCollection;
-        public ObservableCollection<Data> CarFitDataCollection
-        {
-            get { return _carFitDataCollection ?? (_carFitDataCollection = new ObservableCollection<Data>()); }
-            set { _carFitDataCollection = value; RaisePropertyChanged(); }
-        }
+
         /// <summary>
         /// Below Property is used to control Pull To Refresh Feature
         /// </summary>
@@ -154,16 +148,26 @@ namespace XFTest.ViewModels
         #endregion
 
         #region Constructor
-        public CleaningListViewModel(IDialogService dialogService, INavigationService navigationService)
+        public CleaningListViewModel(INavigationService navigationService, ICarFitApiService apiService)
+            : base(navigationService, apiService)
         {
             try
             {
-                //source object initialization
+                //Initialization
+                _apiService = apiService;
                 source = new List<Data>();
-                //Initializing UtilityMethods object so we can access its methods
                 utilityMethods = new UtilityMethods();
-                //Method for getting CarFit Records from json
-                FetchCarFitRecords();
+                //Get Car Fit Records From JSON File
+                List<Data> carFitRecords = _apiService.GetCarFitOrders();
+                if (carFitRecords != null && carFitRecords.Any())
+                    carFitRecords.ForEach(
+                                    //Change the formate for some Data calss properties based on requirement
+                                    car => UpdateCarFitData(car, carFitRecords)
+                                 );
+                //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
+                //After Calcualting Distancee between each places
+                //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
+                CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
             }
             catch (Exception ex)
             {
@@ -313,6 +317,7 @@ namespace XFTest.ViewModels
 
                 //Adding Final Filtered Data in CarFitDataCollection after Calculating Distance between them
                 CarFitDataCollection = utilityMethods.CalculateDistance(filteredCarfitData);
+
             }
             catch (Exception ex)
             {
@@ -385,7 +390,9 @@ namespace XFTest.ViewModels
                 Console.WriteLine("Exception At ExecuteShowDialogCommand Methood : {0}", ex.Message);
             }
         }
+        /// <summary>
         //Below Method will load the calender dates
+        /// </summary>
         private void LoadCalenderViewDates(List<DateTime> calenderDates)
         {
             //Update Calender Title with Month and Year
@@ -466,44 +473,6 @@ namespace XFTest.ViewModels
                 CalenderView.Children.Add(stackLayout);
             }
 
-        }
-        /// <summary>
-        /// Below method will fetch the vlaues from JSON file
-        /// Update some of properties for Data class so we can used in Binding in UI
-        /// Store the final list in to readonly source object so while click on calender we can fect records based on date selection from Total Records
-        //  Get CarFitDataCollection values from source itself 
-        /// Set CarFitDataCollection as CollectionView ItemsSource
-        /// </summary>
-        private void FetchCarFitRecords()
-        {
-            try
-            {
-                carFitCounter = 0;
-                string jsonFileName = "CarFitData.json";
-                var assembly = typeof(CleaningListViewModel).GetTypeInfo().Assembly;
-                Stream stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{jsonFileName}");
-                using (var reader = new System.IO.StreamReader(stream))
-                {
-                    var jsonString = reader.ReadToEnd();
-                    //Converting JSON Array Objects into generic list and update some of newly added properties values
-                    if (JsonConvert.DeserializeObject<CarFitRecords>(jsonString) != null && JsonConvert.DeserializeObject<CarFitRecords>(jsonString).data.Any())
-                        //iterate the each record and made necessary update in values
-                        JsonConvert.DeserializeObject<CarFitRecords>(jsonString).data.ForEach(
-
-                            //Change the formate for some Data calss properties based on requirement
-                            car => UpdateCarFitData(car, JsonConvert.DeserializeObject<CarFitRecords>(jsonString).data)
-                         );
-
-                }
-                //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
-                //After Calcualting Distancee between each places
-                //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
-                CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception At fetchCarFitRecords Method : {0}", ex.Message);
-            }
         }
         /// <summary>
         /// Main method which used to update some of Data class properties based on our requirement before display it on UI list

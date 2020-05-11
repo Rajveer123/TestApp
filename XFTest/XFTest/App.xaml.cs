@@ -4,6 +4,8 @@ using XFTest.ViewModels;
 using XFTest.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XFTest.Interface;
+using XFTest.Services;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace XFTest
@@ -28,8 +30,23 @@ namespace XFTest
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterServices();
+            containerRegistry.RegisterPages();
+        }
+
+    }
+    public static class ContainerRegistryExtensions
+    {
+        public static void RegisterServices(this IContainerRegistry containerRegistry)
+        {
+            containerRegistry.Register<ICarFitApiService, CatFitApiService>();
+        }
+
+        public static void RegisterPages(this IContainerRegistry containerRegistry)
+        {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<CleaningList, CleaningListViewModel>();
         }
     }
 }

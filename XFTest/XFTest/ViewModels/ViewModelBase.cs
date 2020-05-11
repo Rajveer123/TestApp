@@ -1,21 +1,17 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 using Prism.Navigation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
+using XFTest.Interface;
 
 namespace XFTest.ViewModels
 {
-    public class ViewModelBase : BindableBase, IInitialize, INavigationAware, IDestructible
+    public class ViewModelBase : BindableBase, IInitialize, IDestructible, INavigationAware
     {
+
         protected INavigationService NavigationService { get; private set; }
 
 
 
-        public ViewModelBase(INavigationService navigationService)
+        public ViewModelBase(INavigationService navigationService, ICarFitApiService apiService)
         {
             NavigationService = navigationService;
         }
