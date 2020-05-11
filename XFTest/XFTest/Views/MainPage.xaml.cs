@@ -14,15 +14,5 @@ namespace XFTest.Views
             InitializeComponent();
         }
 
-        private async void BtnCleaningList_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new Views.CleaningList());
-        }
-
-        //private async void btnCalendar_Clicked(object sender, EventArgs e)
-        //{
-        //    //await Navigation.PushAsync(new Calendar());
-        //}
-
     }
 }

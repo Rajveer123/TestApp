@@ -8,6 +8,7 @@ using XFTest.Helper;
 using Xamarin.Forms;
 using System.Windows.Input;
 using XFTest.Interface;
+using Prism.Mvvm;
 
 namespace XFTest.ViewModels
 {
@@ -153,21 +154,11 @@ namespace XFTest.ViewModels
         {
             try
             {
-                //Initialization
+                //Object Initialization
                 _apiService = apiService;
                 source = new List<Data>();
                 utilityMethods = new UtilityMethods();
-                //Get Car Fit Records From JSON File
-                List<Data> carFitRecords = _apiService.GetCarFitOrders();
-                if (carFitRecords != null && carFitRecords.Any())
-                    carFitRecords.ForEach(
-                                    //Change the formate for some Data calss properties based on requirement
-                                    car => UpdateCarFitData(car, carFitRecords)
-                                 );
-                //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
-                //After Calcualting Distancee between each places
-                //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
-                CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
+
             }
             catch (Exception ex)
             {
@@ -242,6 +233,28 @@ namespace XFTest.ViewModels
         #endregion
 
         #region private methods
+        public virtual void OnNavigatedFrom(INavigationParameters parameters)
+        {
+
+        }
+        /// <summary>
+        /// Method used to call the injected method to get JSON data
+        /// </summary>
+        /// <param name="parameters"></param>
+        public virtual void OnNavigatedTo(INavigationParameters parameters)
+        {
+            //Get Car Fit Records From JSON File
+            List<Data> carFitRecords = _apiService.GetCarFitOrders();
+            if (carFitRecords != null && carFitRecords.Any())
+                carFitRecords.ForEach(
+                                //Change the formate for some Data calss properties based on requirement
+                                car => UpdateCarFitData(car, carFitRecords)
+                             );
+            //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
+            //After Calcualting Distancee between each places
+            //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
+            CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
+        }
         /// <summary>
         /// ExecuteHandleArrowCommand
         /// This will used to load next or preevious month calender dates based on arrowType clicked by user

@@ -9,7 +9,6 @@
                 prism:ViewModelLocator.AutowireViewModel="True"
              mc:Ignorable="d" 
              NavigationPage.HasNavigationBar="False"
-             Title="I DAG" 
              x:Class="XFTest.Views.CleaningList"
              BackgroundColor="#f2f2ef">
 
