@@ -346,8 +346,11 @@ namespace XFTest.ViewModels
                 }
 
                 //Adding Final Filtered Data in CarFitDataCollection after Calculating Distance between them
-                CarFitDataCollection = utilityMethods.CalculateDistance(filteredCarfitData);
-
+                ObservableCollection<Data> distanceCalculatedCarFitData = utilityMethods.CalculateDistance(filteredCarfitData);
+                foreach (var item in distanceCalculatedCarFitData)
+                {
+                    CarFitDataCollection.Add(item);
+                }
             }
             catch (Exception ex)
             {
@@ -388,8 +391,11 @@ namespace XFTest.ViewModels
                 }
 
                 //Adding Final Filtered Data in CarFitDataCollection after Calculating Distance between them if we have data with only visitStatus = Done
-                CarFitDataCollection = (itemCount == source.Count) ? utilityMethods.CalculateDistance(filteredCarfitData) : filteredCarfitData;
-
+                ObservableCollection<Data> distanceCalculatedCarFitData = (itemCount == source.Count) ? utilityMethods.CalculateDistance(filteredCarfitData) : filteredCarfitData;
+                foreach (var item in distanceCalculatedCarFitData)
+                {
+                    CarFitDataCollection.Add(item);
+                }
                 // Stop refreshing
                 IsRefreshing = false;
             }
