@@ -13,70 +13,87 @@
              BackgroundColor="#f2f2ef">
 
     <ContentPage.Content>
-
-        <StackLayout>
-            <Grid Padding="0" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <views:Calendar IsVisible="{Binding CalenderVisibility}" Grid.ColumnSpan="2" Grid.Column="0"></views:Calendar>
-                <Label x:Name="PageHeading" Grid.Row="0" Grid.Column="0" Margin="{OnPlatform iOS='75,60,0,0', Android='75,30,20,0'}" Text="{Binding PageTitle}" 
+        <AbsoluteLayout>
+            <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <Grid Padding="0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <views:Calendar IsVisible="{Binding CalenderVisibility}" Grid.ColumnSpan="2" Grid.Column="0"></views:Calendar>
+                    <Label x:Name="PageHeading" Grid.Row="0" Grid.Column="0" Margin="{OnPlatform iOS='75,60,0,0', Android='75,30,20,0'}" Text="{Binding PageTitle}" 
                        Style="{StaticResource PageHeading}" 
                        HorizontalTextAlignment="Center" 
                        FontFamily="{StaticResource BoldFont}" IsVisible="{Binding HeaderVisibility}"/>
-                <ffimageloadingsvg:SvgCachedImage Margin="{OnPlatform iOS='0,60,0,0', Android='0,30,20,0'}" 
+                    <ffimageloadingsvg:SvgCachedImage Margin="{OnPlatform iOS='0,60,0,0', Android='0,30,20,0'}" 
                         Source="Calender.svg" 
                         WidthRequest="20" 
                         Grid.Row="0" Grid.Column="1" IsVisible="{Binding HeaderVisibility}"
 			        >
-                    <ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
-                        <TapGestureRecognizer  Command="{Binding ShowDialogCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
-                    </ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
-                </ffimageloadingsvg:SvgCachedImage>
-            </Grid>
+                        <ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+                            <TapGestureRecognizer  Command="{Binding ShowDialogCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
+                        </ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+                    </ffimageloadingsvg:SvgCachedImage>
+                </Grid>
 
-            <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
+                <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
              Command="{Binding RefreshCommand}">
-                <RefreshView.GestureRecognizers>
-                    <TapGestureRecognizer  Command="{Binding HandleOutSideClickCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
-                </RefreshView.GestureRecognizers>
-                <CollectionView ItemsSource="{Binding CarFitDataCollection,Mode=TwoWay}" Margin="20,20,20,20">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <StackLayout Margin="0, 0, 0, 15">
-                                <Frame                               
+                    <RefreshView.GestureRecognizers>
+                        <TapGestureRecognizer  Command="{Binding HandleOutSideClickCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
+                    </RefreshView.GestureRecognizers>
+                    <CollectionView ItemsSource="{Binding CarFitDataCollection,Mode=TwoWay}" Margin="20,20,20,20">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Margin="0, 0, 0, 15">
+                                    <Frame                               
                                 HorizontalOptions="StartAndExpand"
                                 VerticalOptions="StartAndExpand"                                
                                 Padding="10,20,0,10" 
                                 HasShadow="False"
                                 IsClippedToBounds="True" BackgroundColor="#ffffff" CornerRadius="15" >
-                                    <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
-                                </Frame>
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                    <CollectionView.EmptyView>
-                        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-                            <Label Text="{Binding EmptyViewHeaderLabel}"
+                                        <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
+                                    </Frame>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                                <Label Text="{Binding EmptyViewHeaderLabel}"
                        Margin="10,25,10,10"
                        FontAttributes="Bold"
                        FontSize="18"
                        HorizontalOptions="Fill"
                        HorizontalTextAlignment="Center" />
-                            <Label Text="{Binding EmptyViewSubTitleLabel}"
+                                <Label Text="{Binding EmptyViewSubTitleLabel}"
                        FontAttributes="Italic"
                        FontSize="12"
                        HorizontalOptions="Fill"
                        HorizontalTextAlignment="Center" />
-                        </StackLayout>
-                    </CollectionView.EmptyView>
-                </CollectionView>
-            </RefreshView>
-        </StackLayout>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </RefreshView>
+            </StackLayout>
+            <!-- overlay effect while list is loading data -->
+            <ContentView AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" IsVisible="{Binding IsExecuting}" BackgroundColor="Transparent">
+                <Frame VerticalOptions="CenterAndExpand" HasShadow="False" HorizontalOptions="CenterAndExpand" BackgroundColor="Black" CornerRadius="15">
+                    <StackLayout Orientation="Horizontal">
+                        <ActivityIndicator IsRunning="{Binding IsExecuting}" IsVisible="{Binding IsExecuting}" Color="White">
+                            <ActivityIndicator.Margin>
+                                <OnPlatform iOS="20,20,0,20" Android="25,10,0,10" x:TypeArguments="Thickness" />
+                            </ActivityIndicator.Margin>
+                        </ActivityIndicator>
+                        <Label Text="Loading..." TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
+                            <Label.Margin>
+                                <OnPlatform iOS="0,20,20,20" Android="0,15,25,15" x:TypeArguments="Thickness" />
+                            </Label.Margin>
+                        </Label>
+                    </StackLayout>
+                </Frame>
+            </ContentView>
+        </AbsoluteLayout>
     </ContentPage.Content>
-
 </ContentPage>

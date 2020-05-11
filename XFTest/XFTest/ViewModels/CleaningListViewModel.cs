@@ -106,6 +106,19 @@ namespace XFTest.ViewModels
             get { return _emptyViewSubTitleLabel; }
             set { _emptyViewSubTitleLabel = value; RaisePropertyChanged(); }
         }
+        /// <summary>
+        /// Below Property is used to show / hide overlay activity indicator view while list is loading data
+        /// </summary>
+        bool isExecuting;
+        public bool IsExecuting
+        {
+            get => isExecuting;
+            set
+            {
+                isExecuting = value;
+                RaisePropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Below Property is used to control Pull To Refresh Feature
@@ -154,6 +167,8 @@ namespace XFTest.ViewModels
         {
             try
             {
+                //Show Activity Indicator Overlay view while list is loading data
+                IsExecuting = true;
                 //Object Initialization
                 _apiService = apiService;
                 source = new List<Data>();
@@ -254,6 +269,8 @@ namespace XFTest.ViewModels
             //After Calcualting Distancee between each places
             //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
             CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
+            //Hide overlay indicator view as list data has been set
+            IsExecuting = false;
         }
         /// <summary>
         /// ExecuteHandleArrowCommand
