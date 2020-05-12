@@ -38,50 +38,51 @@
                         </ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
                     </ffimageloadingsvg:SvgCachedImage>
                 </Grid>
-
-                <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
-             Command="{Binding RefreshCommand}">
-                    <RefreshView.Padding>
-                        <OnPlatform iOS="5,20,5,10" x:TypeArguments="Thickness" />
-                    </RefreshView.Padding>
-                    <RefreshView.Margin>
-                        <OnPlatform Android="25,20,25,20" x:TypeArguments="Thickness" />
-                    </RefreshView.Margin>
-                    <RefreshView.GestureRecognizers>
+                <ContentView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                    <ContentView.GestureRecognizers>
                         <TapGestureRecognizer  Command="{Binding HandleOutSideClickCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
-                    </RefreshView.GestureRecognizers>
-                    <CollectionView ItemsSource="{Binding CarFitDataCollection}" Margin="20,20,20,20">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <StackLayout Margin="0, 0, 0, 15">
-                                    <Frame                               
+                    </ContentView.GestureRecognizers>
+                    <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
+             Command="{Binding RefreshCommand}">
+                        <RefreshView.Padding>
+                            <OnPlatform iOS="5,10,5,10" x:TypeArguments="Thickness" />
+                        </RefreshView.Padding>
+                        <RefreshView.Margin>
+                            <OnPlatform Android="25,20,25,20" x:TypeArguments="Thickness" />
+                        </RefreshView.Margin>
+                        <CollectionView ItemsSource="{Binding CarFitDataCollection}" Margin="20,20,20,20">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout Margin="0, 0, 0, 15">
+                                        <Frame                               
                                 HorizontalOptions="StartAndExpand"
                                 VerticalOptions="StartAndExpand"                                
                                 Padding="10,20,0,10" 
                                 HasShadow="False"
                                 IsClippedToBounds="True" BackgroundColor="#ffffff" CornerRadius="15" >
-                                        <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
-                                    </Frame>
-                                </StackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                        <CollectionView.EmptyView>
-                            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-                                <Label Text="{Binding EmptyViewHeaderLabel}"
+                                            <views:CleaningListDataTemplate></views:CleaningListDataTemplate>
+                                        </Frame>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            <CollectionView.EmptyView>
+                                <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                                    <Label Text="{Binding EmptyViewHeaderLabel}"
                        Margin="10,25,10,10"
                        FontAttributes="Bold"
                        FontSize="18"
                        HorizontalOptions="Fill"
                        HorizontalTextAlignment="Center" />
-                                <Label Text="{Binding EmptyViewSubTitleLabel}"
+                                    <Label Text="{Binding EmptyViewSubTitleLabel}"
                        FontAttributes="Italic"
                        FontSize="12"
                        HorizontalOptions="Fill"
                        HorizontalTextAlignment="Center" />
-                            </StackLayout>
-                        </CollectionView.EmptyView>
-                    </CollectionView>
-                </RefreshView>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+                    </RefreshView>
+                </ContentView>
             </StackLayout>
             <!-- overlay effect while list is loading data -->
             <ContentView AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" IsVisible="{Binding IsExecuting}" BackgroundColor="Transparent">
