@@ -14,7 +14,7 @@
 
     <ContentPage.Content>
         <AbsoluteLayout>
-            <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+            <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" Spacing="0">
                 <Grid Padding="0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -41,6 +41,12 @@
 
                 <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
              Command="{Binding RefreshCommand}">
+                    <RefreshView.Padding>
+                        <OnPlatform iOS="5,20,5,10" x:TypeArguments="Thickness" />
+                    </RefreshView.Padding>
+                    <RefreshView.Margin>
+                        <OnPlatform Android="25,20,25,20" x:TypeArguments="Thickness" />
+                    </RefreshView.Margin>
                     <RefreshView.GestureRecognizers>
                         <TapGestureRecognizer  Command="{Binding HandleOutSideClickCommand}"  NumberOfTapsRequired="1"></TapGestureRecognizer>
                     </RefreshView.GestureRecognizers>
