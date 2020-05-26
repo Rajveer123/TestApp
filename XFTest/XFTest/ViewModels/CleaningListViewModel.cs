@@ -8,7 +8,7 @@ using XFTest.Helper;
 using Xamarin.Forms;
 using System.Windows.Input;
 using XFTest.Interface;
-using Prism.Mvvm;
+
 
 namespace XFTest.ViewModels
 {
@@ -25,8 +25,8 @@ namespace XFTest.ViewModels
         public readonly IList<Data> source;
         //Below class will contains all required utitiley methods
         private UtilityMethods utilityMethods;
-        //used to get count for row in for each
-        int carFitCounter = 0;
+        //Used to get count for row in for each
+        int carFitCounter;
         #endregion
 
         #region Properties
@@ -71,6 +71,16 @@ namespace XFTest.ViewModels
         }
 
         /// <summary>
+        /// Second Selected Calender Date - Initially set today's Date By Default
+        /// </summary>
+        private DateTime _selectedSecondCalenderDate = DateTime.Now;
+        public DateTime SelectedSecondCalenderDate
+        {
+            get { return _selectedSecondCalenderDate; }
+            set { _selectedSecondCalenderDate = value; RaisePropertyChanged(); }
+        }
+
+        /// <summary>
         /// Calender Title
         /// </summary>
         private string _calenderTitle;
@@ -89,6 +99,16 @@ namespace XFTest.ViewModels
             set { _pageTitle = value; RaisePropertyChanged(); }
         }
         /// <summary>
+        /// Empty View Visibility Property
+        /// </summary>
+        private bool _emptyViewVisibility;
+        public bool EmptyViewVisibility
+        {
+            get { return _emptyViewVisibility; }
+            set { _emptyViewVisibility = value; RaisePropertyChanged(); }
+        }
+
+        /// <summary>
         /// Empty View Header Label Title
         /// </summary>
         private string _emptyViewHeaderLabel;
@@ -100,7 +120,7 @@ namespace XFTest.ViewModels
         /// <summary>
         /// Empty View SubTitle Label Title
         /// </summary>
-        private string _emptyViewSubTitleLabel;
+        private string _emptyViewSubTitleLabel = "Try To Select Different Dates From Calender.";
         public string EmptyViewSubTitleLabel
         {
             get { return _emptyViewSubTitleLabel; }
@@ -177,7 +197,7 @@ namespace XFTest.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception At Constructor : {0}", ex.Message);
+                HandleException("Constructor", ex.Message, true);
             }
 
         }
@@ -258,19 +278,28 @@ namespace XFTest.ViewModels
         /// <param name="parameters"></param>
         public virtual void OnNavigatedTo(INavigationParameters parameters)
         {
-            //Get Car Fit Records From JSON File
-            List<Data> carFitRecords = _apiService.GetCarFitOrders();
-            if (carFitRecords != null && carFitRecords.Any())
-                carFitRecords.ForEach(
-                                //Change the formate for some Data calss properties based on requirement
-                                car => UpdateCarFitData(car, carFitRecords)
-                             );
-            //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
-            //After Calcualting Distancee between each places
-            //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
-            CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
-            //Hide overlay indicator view as list data has been set
-            IsExecuting = false;
+            try
+            {
+                //Get Car Fit Records From JSON File
+                List<Data> carFitRecords = _apiService.GetCarFitOrders();
+                if (carFitRecords != null && carFitRecords.Any())
+                    carFitRecords.ForEach(
+                                    //Change the formate for some Data calss properties based on requirement
+                                    car => UpdateCarFitData(car, carFitRecords)
+                                 );
+                //Setting CollectionView ItemsSource value as Bindable property to CarFitData object from read only sorce object
+                //After Calcualting Distancee between each places
+                //Note : - Logic for Calculating Distance in KM DYNAMICALLY no matter how much places are there in json string
+                CarFitDataCollection = utilityMethods.CalculateDistance(new ObservableCollection<Data>(source));
+                //Hide overlay indicator view as list data has been set
+                IsExecuting = false;
+                //Show Empty View Visibility
+                EmptyViewVisibility = true;
+            }
+            catch (Exception ex)
+            {
+                HandleException("OnNavigatedTo", ex.Message, true);
+            }
         }
         /// <summary>
         /// ExecuteHandleArrowCommand
@@ -301,7 +330,7 @@ namespace XFTest.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception At ExecuteHandleArrowCommand Methood : {0}", ex.Message);
+                HandleException("ExecuteHandleArrowCommand", ex.Message);
             }
         }
         /// <summary>
@@ -310,8 +339,16 @@ namespace XFTest.ViewModels
         /// </summary>
         private void ExecuteHandleOutSideClickCommand()
         {
-            HeaderVisibility = true;
-            CalenderVisibility = false;
+            try
+            {
+                HeaderVisibility = true;
+                CalenderVisibility = false;
+            }
+            catch (Exception ex)
+            {
+                HandleException("ExecuteHandleOutSideClickCommand", ex.Message);
+            }
+
         }
         /// <summary>
         /// Execute Calendar Date Selection Command
@@ -322,27 +359,42 @@ namespace XFTest.ViewModels
         {
             try
             {
+                IsExecuting = true;
                 HeaderVisibility = true;
                 CalenderVisibility = false;
                 //Update the page title once date selected from calender i.e Today or Date along with Month and Year
                 PageTitle = (((DateTime.Now.Year == currentDate.Year) && (DateTime.Now.Month == currentDate.Month) && ((DateTime.Now.Day == Convert.ToInt32(selectedCalenderDate))))) ? "Today" : (selectedCalenderDate + " " + currentDate.ToString("MMMM") + " " + currentDate.Year);
-                EmptyViewHeaderLabel = "Sorry!! No CarFit Order Records Found For Selected Date";
-                EmptyViewSubTitleLabel = "Try To Select Different Date From Calender.";
-                //Update the selected calender date value based on user date selection
-                //So next time when calender gets open it shows the last selected date
-                SelectedCalenderDate = new DateTime(currentDate.Year, currentDate.Month, Convert.ToInt32(selectedCalenderDate));
+                //Update the selected calender dates value based on user date selection
+                //So next time when calender gets open it shows the last selected dates
+                //As per logic it only displays latest selected two dates only
+                DateTime selectedDate = new DateTime(currentDate.Year, currentDate.Month, Convert.ToInt32(selectedCalenderDate));
+                //If same date selected from calender no need to do further operation
+                if ((SelectedCalenderDate.Year == selectedDate.Year && SelectedCalenderDate.Month == selectedDate.Month && SelectedCalenderDate.Day == selectedDate.Day) || (SelectedSecondCalenderDate.Year == selectedDate.Year && SelectedSecondCalenderDate.Month == selectedDate.Month && SelectedSecondCalenderDate.Day == selectedDate.Day))
+                {
+                    //Hide overlay indicator view
+                    IsExecuting = false;
+                    return;
+                }
+                else
+                {
+                    //Perform All Calender Date Selected Dates Logic
+                    SettingCalendarDates(selectedDate);
+                }
+                //Update message text for Empty view based on two dates selected range
+                EmptyViewHeaderLabel = "Sorry!! No CarFit Order Records Found In Between " + (SelectedCalenderDate.Day + " " + SelectedCalenderDate.ToString("MMMM") + " " + SelectedCalenderDate.Year) + " to " + (SelectedSecondCalenderDate.Day + " " + SelectedSecondCalenderDate.ToString("MMMM") + " " + SelectedSecondCalenderDate.Year) + ".";
                 //Clear Collection and filteredCarfitData List Data
-                CarFitDataCollection.Clear();
-                filteredCarfitData.Clear();
+                ClearCollectionsData();
                 //Get Filter data based on date selected by user
                 foreach (var item in source)
                 {
                     DateTime date = (DateTime)Convert.ChangeType(item.startTimeUtc, typeof(DateTime));
-                    //If list having all itesms then we have to show filterd item on refresh
-                    if ((date.Year == SelectedCalenderDate.Year) && (date.Month == SelectedCalenderDate.Month) && (date.Day == SelectedCalenderDate.Day))
+                    //If list having all items then we have to show filterd items based on two dates selected from calender
+                    //i.e The data which are in between two selected dates with in calender view
+                    if (utilityMethods.IsDateInBetweenIncludingEndPoints(SelectedCalenderDate, SelectedSecondCalenderDate, date))
                     {
                         filteredCarfitData.Add(item);
                     }
+
                 }
 
                 //Adding Final Filtered Data in CarFitDataCollection after Calculating Distance between them
@@ -351,13 +403,101 @@ namespace XFTest.ViewModels
                 {
                     CarFitDataCollection.Add(item);
                 }
+                IsExecuting = false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception At ExecuteCalendarDateSelectionCommand Methood : {0}", ex.Message);
+                HandleException("ExecuteCalendarDateSelectionCommand", ex.Message, true);
             }
         }
+        /// <summary>
+        /// Method clears CarFit and filterCarFit Data
+        /// </summary>
+        private void ClearCollectionsData()
+        {
+            try
+            {
+                //Clear Collection and filteredCarfitData List Data
+                CarFitDataCollection.Clear();
+                filteredCarfitData.Clear();
+            }
+            catch (Exception ex)
+            {
+                HandleException("ClearCollectionsData", ex.Message);
+            }
 
+        }
+        /// <summary>
+        /// Below funcation contains Both Calendar Dates Selecction Logic
+        /// </summary>
+        /// <param name="selectedDate"></param>
+        private void SettingCalendarDates(DateTime selectedDate)
+        {
+            try
+            {
+                int curretDateDayDifference = Math.Abs(Convert.ToInt32((selectedDate - SelectedCalenderDate).TotalDays));
+                int secondDateDayDifference = Math.Abs(Convert.ToInt32((selectedDate - SelectedSecondCalenderDate).TotalDays));
+                if (curretDateDayDifference == secondDateDayDifference)
+                {
+                    if (SelectedCalenderDate < selectedDate)
+                    {
+                        SelectedSecondCalenderDate = selectedDate;
+                    }
+                    else
+                    {
+                        SelectedCalenderDate = selectedDate;
+                    }
+
+                }
+                else
+                {
+                    if (utilityMethods.IsDateInBetweenIncludingEndPoints(SelectedCalenderDate, SelectedSecondCalenderDate, selectedDate))
+                    {
+                        if (curretDateDayDifference < secondDateDayDifference)
+                        {
+                            //Assign new values
+                            SelectedCalenderDate = selectedDate;
+                        }
+                        else
+                        {
+                            //Assign new values
+                            SelectedSecondCalenderDate = selectedDate;
+                        }
+                    }
+                    else
+                    {
+                        //Checking Selected date is greater then already selected two dates
+                        if (selectedDate > SelectedCalenderDate)
+                        {
+                            //Assign new values
+                            SelectedSecondCalenderDate = selectedDate;
+
+
+                        }
+                        else
+                        {
+                            //Assign new values
+                            SelectedCalenderDate = selectedDate;
+                        }
+                    }
+
+                }
+                //Final Checking SelectedCalenderDate should be less then SelectedSecondCalenderDate
+                //Otherwise replace the values
+                if (SelectedCalenderDate > SelectedSecondCalenderDate)
+                {
+                    var intialSecondSelectedCalenderDate = SelectedSecondCalenderDate;
+                    SelectedSecondCalenderDate = SelectedCalenderDate;
+                    SelectedCalenderDate = intialSecondSelectedCalenderDate;
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException("SettingCalendarDates", ex.Message);
+
+            }
+
+        }
         /// <summary>
         /// Toggle PULL to Refresh Feature: - In which we will display only Data having visitState 'Done', 'In-Progress'
         /// So you have idea that pull to refresh is working fine 
@@ -370,10 +510,10 @@ namespace XFTest.ViewModels
             {
                 if (IsRefreshing)
                     return;
+                IsExecuting = true;
                 int itemCount = CarFitDataCollection.Count;
                 //Clear Collection filteredCarfitData List Data
-                CarFitDataCollection.Clear();
-                filteredCarfitData.Clear();
+                ClearCollectionsData();
                 //Get Filter data based on PUlL ReFresh Feature Data having "Done" Status only 
                 foreach (var item in source)
                 {
@@ -398,10 +538,13 @@ namespace XFTest.ViewModels
                 }
                 // Stop refreshing
                 IsRefreshing = false;
+                // Stop Indicator
+                IsExecuting = false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception At ExecuteRefreshCommand Methood : {0}", ex.Message);
+                HandleException("ExecuteRefreshCommand", ex.Message, true);
+
             }
         }
         /// <summary>
@@ -423,7 +566,7 @@ namespace XFTest.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception At ExecuteShowDialogCommand Methood : {0}", ex.Message);
+                HandleException("ExecuteShowDialogCommand", ex.Message);
             }
         }
         /// <summary>
@@ -431,84 +574,90 @@ namespace XFTest.ViewModels
         /// </summary>
         private void LoadCalenderViewDates(List<DateTime> calenderDates)
         {
-            //Update Calender Title with Month and Year
-            CalenderTitle = currentDate.ToString("MMMM").Substring(0, 3).ToUpper() + " " + currentDate.Year;
-
-            //Check if already data is there then clear it first before loading new dates 
-            if (CalenderView.Children.Any())
-                CalenderView.Children.Clear();
-            CalenderView.Orientation = StackOrientation.Horizontal;
-            foreach (var calenderDate in calenderDates)
+            try
             {
-                StackLayout stackLayout = new StackLayout() { HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
-                stackLayout.GestureRecognizers.Add(new TapGestureRecognizer
-                {
-                    Command = HandleCalendarDateSelectionCommand,
-                    CommandParameter = calenderDate.Day.ToString(),
-                    NumberOfTapsRequired = 1
-                });
-                Grid grid = new Grid();
-                grid.VerticalOptions = LayoutOptions.FillAndExpand;
-                grid.HorizontalOptions = LayoutOptions.FillAndExpand;
-                grid.Style = (Style)Application.Current.Resources["CalDatePad"];
-                VisualStateManager.GoToState(grid, State);
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+                //Update Calender Title with Month and Year
+                CalenderTitle = currentDate.ToString("MMMM").Substring(0, 3).ToUpper() + " " + currentDate.Year;
 
-                Frame view = new Frame();
-                view.HorizontalOptions = LayoutOptions.FillAndExpand;
-                view.VerticalOptions = LayoutOptions.FillAndExpand;
-                view.HeightRequest = 30;
-                view.WidthRequest = 30;
-                view.Margin = 0;
-                view.Padding = 0;
-                view.HasShadow = false;
-                view.BackgroundColor = Color.Transparent;
-                //If it matches with current date then set background color
-                if ((calenderDate.Year == SelectedCalenderDate.Year) && (calenderDate.Month == SelectedCalenderDate.Month) && (calenderDate.Day == SelectedCalenderDate.Day))
+                //Check if already data is there then clear it first before loading new dates 
+                if (CalenderView.Children.Any())
+                    CalenderView.Children.Clear();
+                CalenderView.Orientation = StackOrientation.Horizontal;
+                foreach (var calenderDate in calenderDates)
                 {
-                    view.CornerRadius = 15;
-                    view.BackgroundColor = Color.FromHex("#368268");
+                    StackLayout stackLayout = new StackLayout() { HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+                    stackLayout.GestureRecognizers.Add(new TapGestureRecognizer
+                    {
+                        Command = HandleCalendarDateSelectionCommand,
+                        CommandParameter = calenderDate.Day.ToString(),
+                        NumberOfTapsRequired = 1
+                    });
+                    Grid grid = new Grid();
+                    grid.VerticalOptions = LayoutOptions.FillAndExpand;
+                    grid.HorizontalOptions = LayoutOptions.FillAndExpand;
+                    grid.Style = (Style)Application.Current.Resources["CalDatePad"];
+                    VisualStateManager.GoToState(grid, State);
+                    grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+
+                    Frame view = new Frame();
+                    view.HorizontalOptions = LayoutOptions.FillAndExpand;
+                    view.VerticalOptions = LayoutOptions.FillAndExpand;
+                    view.HeightRequest = 30;
+                    view.WidthRequest = 30;
+                    view.Margin = 0;
+                    view.Padding = 0;
+                    view.HasShadow = false;
+                    view.BackgroundColor = Color.Transparent;
+                    //If it matches with current date then set background color
+                    if (((calenderDate.Year == SelectedCalenderDate.Year) && (calenderDate.Month == SelectedCalenderDate.Month) && (calenderDate.Day == SelectedCalenderDate.Day)) || ((calenderDate.Year == SelectedSecondCalenderDate.Year) && (calenderDate.Month == SelectedSecondCalenderDate.Month) && (calenderDate.Day == SelectedSecondCalenderDate.Day)))
+                    {
+                        view.CornerRadius = 15;
+                        view.BackgroundColor = Color.FromHex("#368268");
+                    }
+                    Label dateLabel = new Label
+                    {
+                        FontFamily = Application.Current.Resources["BoldFont"] as string,
+                        Style = (Style)Application.Current.Resources["CalDateText"],
+                        Text = calenderDate.Day.ToString(),
+                        HorizontalOptions = LayoutOptions.CenterAndExpand,
+                        VerticalTextAlignment = TextAlignment.Center,
+                        Padding = 0,
+                        TextColor = (Color)Application.Current.Resources["ColorBluishGrey"],
+                        Margin = 0
+                    };
+                    VisualStateManager.GoToState(dateLabel, State);
+                    view.Content = dateLabel;
+
+                    Grid.SetColumn(view, 0);
+                    Grid.SetRow(view, 0);
+                    grid.Children.Add(view);
+
+                    Label dayLabel = new Label
+                    {
+                        FontFamily = Application.Current.Resources["RegularFont"] as string,
+                        Style = (Style)Application.Current.Resources["NormalText11Cal"],
+                        Text = calenderDate.DayOfWeek.ToString().Substring(0, 3),
+                        HorizontalOptions = LayoutOptions.CenterAndExpand,
+                        TextColor = (Color)Application.Current.Resources["ColorBluishGrey"]
+                    };
+                    VisualStateManager.GoToState(dayLabel, State);
+                    Grid.SetColumn(dayLabel, 0);
+                    Grid.SetRow(dayLabel, 1);
+                    grid.Children.Add(dayLabel);
+
+                    //Adding Grid to Stack Layout
+                    stackLayout.Children.Add(grid);
+
+                    //Adding StackLayout to Main StackLayout
+                    CalenderView.Children.Add(stackLayout);
                 }
-                Label dateLabel = new Label
-                {
-                    FontFamily = Application.Current.Resources["BoldFont"] as string,
-                    Style = (Style)Application.Current.Resources["CalDateText"],
-                    Text = calenderDate.Day.ToString(),
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    Padding = 0,
-                    TextColor = (Color)Application.Current.Resources["ColorBluishGrey"],
-                    Margin = 0
-                };
-                VisualStateManager.GoToState(dateLabel, State);
-                view.Content = dateLabel;
-
-                Grid.SetColumn(view, 0);
-                Grid.SetRow(view, 0);
-                grid.Children.Add(view);
-
-                Label dayLabel = new Label
-                {
-                    FontFamily = Application.Current.Resources["RegularFont"] as string,
-                    Style = (Style)Application.Current.Resources["NormalText11Cal"],
-                    Text = calenderDate.DayOfWeek.ToString().Substring(0, 3),
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    TextColor = (Color)Application.Current.Resources["ColorBluishGrey"]
-                };
-                VisualStateManager.GoToState(dayLabel, State);
-                Grid.SetColumn(dayLabel, 0);
-                Grid.SetRow(dayLabel, 1);
-                grid.Children.Add(dayLabel);
-
-                //Adding Grid to Stack Layout
-                stackLayout.Children.Add(grid);
-
-                //Adding StackLayout to Main StackLayout
-                CalenderView.Children.Add(stackLayout);
             }
-
+            catch (Exception ex)
+            {
+                HandleException("LoadCalenderViewDates", ex.Message);
+            }
         }
         /// <summary>
         /// Main method which used to update some of Data class properties based on our requirement before display it on UI list
@@ -540,9 +689,22 @@ namespace XFTest.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception At updateCarFitData Method : {0}", ex.Message);
+                HandleException("updateCarFitData", ex.Message);
             }
             return car;
+        }
+        /// <summary>
+        /// Common Handle Exception Method
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <param name="hideIndicator"></param>
+        private void HandleException(string methodName, string exceptionMessage, bool hideIndicator = false)
+        {
+            if (hideIndicator)
+                IsExecuting = false;
+
+            Console.WriteLine("Exception At " + methodName + " : {0}", exceptionMessage);
         }
         #endregion
     }

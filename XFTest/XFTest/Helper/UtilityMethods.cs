@@ -125,5 +125,23 @@ namespace XFTest.Helper
             }
             return carFitListData;
         }
+        /// <summary>
+        /// Methods knows that given date is in between startDate and endDate or not
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public bool IsDateInBetweenIncludingEndPoints(DateTime startDate, DateTime endDate, DateTime date)
+        {
+            if (date >= startDate && date <= endDate)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

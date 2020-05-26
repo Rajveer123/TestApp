@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using XFTest.Interface;
 using XFTest.Models;
 
@@ -14,7 +10,16 @@ namespace XFTest.Services
 
         public List<Data> GetCarFitOrders()
         {
-            return Get<List<Data>>();
+            try
+            {
+                return Get<List<Data>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception At GetCarFitOrders Method for Reading Carfit Data from Local Json: {0}", ex.Message);
+                return new List<Data>();
+            }
+
         }
 
 
