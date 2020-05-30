@@ -14,6 +14,8 @@ namespace XFTest.Helper
         const string INPROGRESS_COLOR = "#F5C709";
         const string DONE_COLOR = "#25A87B";
         const string REJECTED_COLOR = "#EF6565";
+        //Time formate we are going to use for displaying startTime
+        const string TIME_FORMATE = "HH:MM";
         /// <summary>
         //Method to get Distance in km based on lat long values
         //lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  
@@ -142,6 +144,14 @@ namespace XFTest.Helper
             {
                 return false;
             }
+        }
+        /// <summary>
+        /// Method return format
+        /// </summary>
+        /// <returns></returns>
+        public string GetDatFormat()
+        {
+            return TIME_FORMATE;
         }
     }
 }

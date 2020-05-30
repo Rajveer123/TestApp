@@ -41,5 +41,6 @@
     <Folder Include="Enums\" />
     <Folder Include="Interface\" />
     <Folder Include="Services\" />
+    <Folder Include="Controls\" />
   </ItemGroup>
 </Project>

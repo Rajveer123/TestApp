@@ -7,7 +7,8 @@
              xmlns:views="clr-namespace:XFTest.Views"
                 xmlns:prism="http://prismlibrary.com"
                 prism:ViewModelLocator.AutowireViewModel="True"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
+             xmlns:controls="clr-namespace:XFTest.Controls"
              NavigationPage.HasNavigationBar="False"
              x:Class="XFTest.Views.CleaningList"
              BackgroundColor="#f2f2ef">
@@ -23,7 +24,7 @@
                         <ColumnDefinition Width="4*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <views:Calendar IsVisible="{Binding CalenderVisibility}" Grid.ColumnSpan="2" Grid.Column="0"></views:Calendar>
+                    <controls:CaledarView CalenderVisibility="{Binding CalenderVisibility}" HeaderVisibility="{Binding HeaderVisibility}" Grid.ColumnSpan="2" Grid.Column="0" SelectCalendarDateCommand="{Binding HandleCalendarDateSelectionCommand}" SelectCalendarDateCommandParameter="1" SelectedCalenderDate="{Binding SelectedCalenderFirstDate}" SelectedSecondCalenderDate="{Binding SelectedCalenderSecondDate}"></controls:CaledarView>
                     <Label x:Name="PageHeading" Grid.Row="0" Grid.Column="0" Margin="{OnPlatform iOS='75,60,0,0', Android='75,30,20,0'}" Text="{Binding PageTitle}" 
                        Style="{StaticResource PageHeading}" 
                        HorizontalTextAlignment="Center" 
