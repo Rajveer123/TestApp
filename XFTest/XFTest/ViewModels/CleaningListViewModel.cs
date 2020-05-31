@@ -36,7 +36,10 @@ namespace XFTest.ViewModels
         public ObservableCollection<Data> CarFitDataCollection
         {
             get { return _carFitDataCollection ?? (_carFitDataCollection = new ObservableCollection<Data>()); }
-            set { _carFitDataCollection = value; RaisePropertyChanged("CarFitDataCollection"); }
+            set
+            {
+                _carFitDataCollection = value; RaisePropertyChanged();
+            }
         }
         /// <summary>
         /// CalenderView Property

@@ -10,7 +10,7 @@ namespace XFTest.Controls
 {
     public class CaledarView : ContentView
     {
-        #region Private Property and Variable
+        #region Private Properties and Variable
         Label calendarTitelLabl = new Label();
         StackLayout stackLayout = new StackLayout();
         private DateTime currentDate = DateTime.Now;
@@ -20,12 +20,18 @@ namespace XFTest.Controls
 
 
         #region Calendar Bindable Properties
+        /// <summary>
+        /// First calender selected date bindable property
+        /// </summary>
         public static readonly BindableProperty SelectedCalenderDateProperty = BindableProperty.Create("SelectedCalenderDate", typeof(DateTime), typeof(CaledarView), DateTime.Now, BindingMode.TwoWay);
         public DateTime SelectedCalenderDate
         {
             get { return (DateTime)GetValue(SelectedCalenderDateProperty); }
             set { SetValue(SelectedCalenderDateProperty, value); }
         }
+        /// <summary>
+        /// Second calender selected date bindable property
+        /// </summary>
         public static readonly BindableProperty SelectedSecondCalenderDateProperty = BindableProperty.Create("SelectedSecondCalenderDate", typeof(DateTime), typeof(CaledarView), DateTime.Now, BindingMode.TwoWay, propertyChanged: (bindable, oldValue, newValue) =>
         {
             var calendarControl = bindable as CaledarView;
@@ -35,6 +41,9 @@ namespace XFTest.Controls
             get { return (DateTime)GetValue(SelectedSecondCalenderDateProperty); }
             set { SetValue(SelectedSecondCalenderDateProperty, value); }
         }
+        /// <summary>
+        /// Header visibility  bindable property
+        /// </summary>
         public static readonly BindableProperty HeaderVisibilityProperty = BindableProperty.Create("HeaderVisibility", typeof(bool), typeof(CaledarView), default(bool), BindingMode.TwoWay, propertyChanged: (bindable, oldValue, newValue) =>
         {
             var calendarControl = bindable as CaledarView;
@@ -45,6 +54,9 @@ namespace XFTest.Controls
             get { return (bool)GetValue(HeaderVisibilityProperty); }
             set { SetValue(HeaderVisibilityProperty, value); }
         }
+        /// <summary>
+        /// Calender visibility  bindable property
+        /// </summary>
         public static readonly BindableProperty CalenderVisibilityProperty = BindableProperty.Create("CalenderVisibility", typeof(bool), typeof(CaledarView), default(bool), BindingMode.TwoWay, propertyChanged: (bindable, oldValue, newValue) =>
         {
             var calendarControl = bindable as CaledarView;
@@ -55,6 +67,9 @@ namespace XFTest.Controls
             get { return (bool)GetValue(CalenderVisibilityProperty); }
             set { SetValue(CalenderVisibilityProperty, value); }
         }
+        /// <summary>
+        /// Select Calendar Date Command  bindable property
+        /// </summary>
         public static readonly BindableProperty SelectCalendarDateCommandProperty =
         BindableProperty.Create("SelectCalendarDateCommand", typeof(ICommand), typeof(CaledarView), default(ICommand));
         public ICommand SelectCalendarDateCommand
@@ -88,7 +103,6 @@ namespace XFTest.Controls
         #endregion
 
         #region Private Methods
-
         private ScrollView LoadCalendarView()
         {
             ScrollView scrollView = new ScrollView
@@ -105,6 +119,10 @@ namespace XFTest.Controls
             scrollView.Content = calenderView;
             return scrollView;
         }
+        /// <summary>
+        /// Below mthod will load calendar title and next / previous buttons UI
+        /// </summary>
+        /// <returns></returns>
         private Grid LoadCalendarTopView()
         {
             Grid calendarTopViewGrid = new Grid { Padding = new Thickness(0, 0, 0, 10) };
@@ -176,7 +194,9 @@ namespace XFTest.Controls
             calendarTopViewGrid.Children.Add(rightArrowImage);
             return calendarTopViewGrid;
         }
-
+        /// <summary>
+        //Below Method will load the calender control UI
+        /// </summary>
         private void LoadControl()
         {
             if (stackLayout.Children.Any())
@@ -201,7 +221,7 @@ namespace XFTest.Controls
             this.Content = stackLayout;
         }
         /// <summary>
-        //Below Method will load the calender dates
+        //Below Method will load the calender dates with in stacklayout
         /// </summary>
         private void LoadCalenderViewDates(List<DateTime> calenderDates)
         {
@@ -294,7 +314,7 @@ namespace XFTest.Controls
             }
         }
         /// <summary>
-        /// Below funcation contains Both Calendar Dates Selecction Logic
+        /// Below funcation contains Both Calendar Dates Selection Logic
         /// </summary>
         /// <param name="selectedDate"></param>
         private void SettingCalendarDates(DateTime selectedDate)
@@ -366,7 +386,7 @@ namespace XFTest.Controls
 
         }
         /// <summary>
-        /// Load Calender Dates UI
+        /// Gets Month Dates and Load Calender Dates with in UI
         /// </summary>
         private void LoadCalenderDates()
         {

@@ -110,6 +110,7 @@ namespace XFTest.Helper
             int carFitCounter = 0;
             foreach (var car in carFitListData)
             {
+                //for first record setting 0 km distance
                 if (carFitCounter == 0)
                 {
                     car.distance = "0.0 km";

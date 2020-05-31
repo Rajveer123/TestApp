@@ -37,11 +37,18 @@ namespace XFTest
     }
     public static class ContainerRegistryExtensions
     {
+        /// <summary>
+        /// Register implementing class with interface
+        /// </summary>
+        /// <param name="containerRegistry"></param>
         public static void RegisterServices(this IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<ICarFitApiService, CatFitApiService>();
         }
-
+        /// <summary>
+        /// Register view with view models
+        /// </summary>
+        /// <param name="containerRegistry"></param>
         public static void RegisterPages(this IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();

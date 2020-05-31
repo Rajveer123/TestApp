@@ -1,7 +1,9 @@
 ﻿using System;
 namespace XFTest.Enums
 {
-
+    /// <summary>
+    /// VisitStates Enum for car fit visit states
+    /// </summary>
     public enum VisitStates
     {
         ToDo = 1,
